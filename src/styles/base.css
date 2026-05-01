@@ -45,11 +45,125 @@ body[data-zone="missionbay"] {
   --zone-accent-soft: rgba(255, 93, 170, 0.07);
   --zone-accent-bg: rgba(255, 93, 170, 0.04);
 }
+body[data-zone="soma"] {
+  --zone-accent: #E74C3C;
+  --zone-accent-glow: rgba(231, 76, 60, 0.5);
+  --zone-accent-soft: rgba(231, 76, 60, 0.07);
+  --zone-accent-bg: rgba(231, 76, 60, 0.04);
+}
+body[data-zone="mission"] {
+  --zone-accent: #F39C12;
+  --zone-accent-glow: rgba(243, 156, 18, 0.5);
+  --zone-accent-soft: rgba(243, 156, 18, 0.07);
+  --zone-accent-bg: rgba(243, 156, 18, 0.04);
+}
+body[data-zone="castro"] {
+  --zone-accent: #9B59B6;
+  --zone-accent-glow: rgba(155, 89, 182, 0.5);
+  --zone-accent-soft: rgba(155, 89, 182, 0.07);
+  --zone-accent-bg: rgba(155, 89, 182, 0.04);
+}
+body[data-zone="hayesvalley"] {
+  --zone-accent: #16A085;
+  --zone-accent-glow: rgba(22, 160, 133, 0.5);
+  --zone-accent-soft: rgba(22, 160, 133, 0.07);
+  --zone-accent-bg: rgba(22, 160, 133, 0.04);
+}
+body[data-zone="pacificheights"] {
+  --zone-accent: #27AE60;
+  --zone-accent-glow: rgba(39, 174, 96, 0.5);
+  --zone-accent-soft: rgba(39, 174, 96, 0.07);
+  --zone-accent-bg: rgba(39, 174, 96, 0.04);
+}
+body[data-zone="marina"] {
+  --zone-accent: #2ECC71;
+  --zone-accent-glow: rgba(46, 204, 113, 0.5);
+  --zone-accent-soft: rgba(46, 204, 113, 0.07);
+  --zone-accent-bg: rgba(46, 204, 113, 0.04);
+}
+body[data-zone="dogpatch"] {
+  --zone-accent: #E8956D;
+  --zone-accent-glow: rgba(232, 149, 109, 0.5);
+  --zone-accent-soft: rgba(232, 149, 109, 0.07);
+  --zone-accent-bg: rgba(232, 149, 109, 0.04);
+}
+body[data-zone="potrerohill"] {
+  --zone-accent: #EA8670;
+  --zone-accent-glow: rgba(234, 134, 112, 0.5);
+  --zone-accent-soft: rgba(234, 134, 112, 0.07);
+  --zone-accent-bg: rgba(234, 134, 112, 0.04);
+}
+body[data-zone="nobhill"] {
+  --zone-accent: #C9A959;
+  --zone-accent-glow: rgba(201, 169, 89, 0.5);
+  --zone-accent-soft: rgba(201, 169, 89, 0.07);
+  --zone-accent-bg: rgba(201, 169, 89, 0.04);
+}
+body[data-zone="northbeach"] {
+  --zone-accent: #D4A574;
+  --zone-accent-glow: rgba(212, 165, 116, 0.5);
+  --zone-accent-soft: rgba(212, 165, 116, 0.07);
+  --zone-accent-bg: rgba(212, 165, 116, 0.04);
+}
+body[data-zone="richmond"] {
+  --zone-accent: #E67E22;
+  --zone-accent-glow: rgba(230, 126, 34, 0.5);
+  --zone-accent-soft: rgba(230, 126, 34, 0.07);
+  --zone-accent-bg: rgba(230, 126, 34, 0.04);
+}
+body[data-zone="sunset"] {
+  --zone-accent: #F8B195;
+  --zone-accent-glow: rgba(248, 177, 149, 0.5);
+  --zone-accent-soft: rgba(248, 177, 149, 0.07);
+  --zone-accent-bg: rgba(248, 177, 149, 0.04);
+}
+body[data-zone="bernalheights"] {
+  --zone-accent: #FF6B6B;
+  --zone-accent-glow: rgba(255, 107, 107, 0.5);
+  --zone-accent-soft: rgba(255, 107, 107, 0.07);
+  --zone-accent-bg: rgba(255, 107, 107, 0.04);
+}
+body[data-zone="glenpark"] {
+  --zone-accent: #A569BD;
+  --zone-accent-glow: rgba(165, 105, 189, 0.5);
+  --zone-accent-soft: rgba(165, 105, 189, 0.07);
+  --zone-accent-bg: rgba(165, 105, 189, 0.04);
+}
+body[data-zone="noevalley"] {
+  --zone-accent: #AF7AC5;
+  --zone-accent-glow: rgba(175, 122, 197, 0.5);
+  --zone-accent-soft: rgba(175, 122, 197, 0.07);
+  --zone-accent-bg: rgba(175, 122, 197, 0.04);
+}
+body[data-zone="twinpeaks"] {
+  --zone-accent: #3498DB;
+  --zone-accent-glow: rgba(52, 152, 219, 0.5);
+  --zone-accent-soft: rgba(52, 152, 219, 0.07);
+  --zone-accent-bg: rgba(52, 152, 219, 0.04);
+}
+body[data-zone="financialdistrict"] {
+  --zone-accent: #4A90E2;
+  --zone-accent-glow: rgba(74, 144, 226, 0.5);
+  --zone-accent-soft: rgba(74, 144, 226, 0.07);
+  --zone-accent-bg: rgba(74, 144, 226, 0.04);
+}
+body[data-zone="tenderloin"] {
+  --zone-accent: #696969;
+  --zone-accent-glow: rgba(105, 105, 105, 0.5);
+  --zone-accent-soft: rgba(105, 105, 105, 0.07);
+  --zone-accent-bg: rgba(105, 105, 105, 0.04);
+}
+body[data-zone="westernaddition"] {
+  --zone-accent: #1ABC9C;
+  --zone-accent-glow: rgba(26, 188, 156, 0.5);
+  --zone-accent-soft: rgba(26, 188, 156, 0.07);
+  --zone-accent-bg: rgba(26, 188, 156, 0.04);
+}
 
 html, body { background: var(--bg); color: var(--amber); }
 body {
-  font-family: 'Space Mono', ui-monospace, Monaco, monospace;
-  font-size: 14px;
+  font-family: 'Doto', 'Space Mono', ui-monospace, Monaco, monospace;
+  font-size: 16px;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -92,7 +206,7 @@ body::after {
   border-bottom: 1px solid var(--amber-dim);
   padding: 6px 12px;
   padding-top: calc(6px + var(--safe-top));
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.2em;
   color: var(--amber-dim);
   overflow: hidden;
@@ -137,8 +251,8 @@ body::after {
 .meta-row .lbl { color: var(--amber-dim); }
 .meta-row .val {
   color: var(--amber-bright);
-  font-family: 'VT323', monospace;
-  font-size: 18px;
+  font-family: 'Doto', 'VT323', monospace;
+  font-size: 22px;
   letter-spacing: 0.05em;
 }
 .stale-warn {
@@ -154,7 +268,7 @@ body::after {
 .col-header {
   background: var(--bg-deep);
   color: var(--amber-dim);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   padding: 10px 14px;
   border-bottom: 1px solid var(--border);
@@ -177,8 +291,8 @@ body::after {
   line-height: 1.6;
 }
 .empty .big {
-  font-family: 'VT323', monospace;
-  font-size: 28px;
+  font-family: 'Doto', 'VT323', monospace;
+  font-size: 36px;
   color: var(--zone-accent);
   text-shadow: 0 0 8px var(--zone-accent-glow);
   margin-bottom: 8px;

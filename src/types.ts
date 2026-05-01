@@ -1,4 +1,4 @@
-export type ZoneId = 'embarcadero' | 'rincon' | 'southbeach' | 'missionbay';
+export type ZoneId = 'embarcadero' | 'rincon' | 'southbeach' | 'missionbay' | 'soma' | 'mission' | 'castro' | 'hayesvalley' | 'pacificheights' | 'marina' | 'dogpatch' | 'potrerohill' | 'nobhill' | 'northbeach' | 'richmond' | 'sunset' | 'bernalheights' | 'glenpark' | 'noevalley' | 'twinpeaks' | 'financialdistrict' | 'tenderloin' | 'westernaddition';
 export type SortMode = 'gate' | 'price' | 'inventory' | 'concession';
 export type StatusLevel = 'boarding' | 'limited' | 'departing';
 
@@ -18,4 +18,16 @@ export interface Building {
   lat: number;
   lng: number;
   notes: string;
+  sourceUrl: string;
+}
+
+export interface BuildingComment {
+  text: string;
+  created_at: string;
+}
+
+export interface BuildingFeedback {
+  comments: BuildingComment[];
+  votes: { yes: number; no: number };
+  userVoted: boolean;
 }

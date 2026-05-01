@@ -1,0 +1,60 @@
+.city-map-container {
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.city-map-container.collapsed {
+  max-height: 0;
+}
+.city-map-container.expanded {
+  max-height: 600px;
+}
+
+.map-toggle {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.map-toggle button {
+  background: none;
+  border: 1px solid var(--amber-dim);
+  color: var(--amber-dim);
+  font-family: 'Doto', 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  padding: 6px 16px;
+  cursor: pointer;
+  min-height: auto;
+}
+
+.city-map-svg {
+  width: 100%;
+  max-width: 400px;
+  margin: 16px auto;
+  display: block;
+}
+
+.map-zone {
+  cursor: pointer;
+  stroke: rgba(255, 180, 0, 0.1);
+  stroke-width: 0.5;
+  transition: opacity 0.3s, filter 0.3s;
+}
+.map-zone-inactive {
+  opacity: 0.25;
+}
+.map-zone-active {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px var(--zone-accent)) drop-shadow(0 0 12px var(--zone-accent));
+}
+.map-zone:hover {
+  opacity: 0.8;
+}
+
+.city-outline {
+  pointer-events: none;
+}
