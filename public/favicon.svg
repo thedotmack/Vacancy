@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="4" fill="#0A0A0A"/>
+  <text x="16" y="24" text-anchor="middle" font-family="monospace" font-weight="700" font-size="22" fill="#FFB400" style="text-shadow:0 0 4px rgba(255,180,0,0.5)">V</text>
+</svg>
