@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+<title>SFRTA · Rental Vacancies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  :root {
+    --amber: #FFB400;
+    --amber-bright: #FFD54F;
+    --amber-dim: #8A6500;
+    --amber-glow: rgba(255, 180, 0, 0.45);
+    --green: #4ADE80;
+    --red: #FF5252;
+    --bg: #0A0A0A;
+    --bg-row: #131313;
+    --bg-deep: #050505;
+    --border: #1F1A0A;
+
+    --zone-accent: #FFB400;
+    --zone-accent-glow: rgba(255, 180, 0, 0.5);
+    --zone-accent-soft: rgba(255, 180, 0, 0.08);
+    --zone-accent-bg: rgba(255, 180, 0, 0.04);
+
+    --safe-top: env(safe-area-inset-top, 0);
+    --safe-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  body[data-zone="embarcadero"] {
+    --zone-accent: #5DD3F0;
+    --zone-accent-glow: rgba(93, 211, 240, 0.5);
+    --zone-accent-soft: rgba(93, 211, 240, 0.07);
+    --zone-accent-bg: rgba(93, 211, 240, 0.04);
+  }
+  body[data-zone="rincon"] {
+    --zone-accent: #FFD54F;
+    --zone-accent-glow: rgba(255, 213, 79, 0.5);
+    --zone-accent-soft: rgba(255, 213, 79, 0.08);
+    --zone-accent-bg: rgba(255, 213, 79, 0.04);
+  }
+  body[data-zone="southbeach"] {
+    --zone-accent: #4FE0C6;
+    --zone-accent-glow: rgba(79, 224, 198, 0.5);
+    --zone-accent-soft: rgba(79, 224, 198, 0.07);
+    --zone-accent-bg: rgba(79, 224, 198, 0.04);
+  }
+  body[data-zone="missionbay"] {
+    --zone-accent: #FF5DAA;
+    --zone-accent-glow: rgba(255, 93, 170, 0.5);
+    --zone-accent-soft: rgba(255, 93, 170, 0.07);
+    --zone-accent-bg: rgba(255, 93, 170, 0.04);
+  }
+
+  html, body { background: var(--bg); color: var(--amber); }
+  body {
+    font-family: 'Space Mono', ui-monospace, Monaco, monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+    text-shadow: 0 0 1px var(--amber-glow);
+    transition: background 0.4s ease;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at top, var(--zone-accent-soft) 0%, transparent 60%),
+      radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 2px,
+        rgba(0,0,0,0.18) 2px,
+        rgba(0,0,0,0.18) 3px
+      );
+    pointer-events: none;
+    z-index: 999;
+    mix-blend-mode: multiply;
+    transition: background 0.5s ease;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(255,180,0,0.012);
+    pointer-events: none;
+    z-index: 998;
+    animation: flicker 8s infinite;
+  }
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    97% { opacity: 1; }
+    97.5% { opacity: 0.4; }
+    98% { opacity: 1; }
+    99% { opacity: 0.7; }
+    99.5% { opacity: 1; }
+  }
+
+  .top-bar {
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--amber-dim);
+    padding: 6px 12px;
+    padding-top: calc(6px + var(--safe-top));
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--amber-dim);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .top-bar .scroll {
+    display: inline-block;
+    animation: scroll 40s linear infinite;
+  }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .eyebrow-band {
+    background: var(--bg-deep);
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    font-size: 10px;
+    color: var(--amber-dim);
+    letter-spacing: 0.25em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  .zone-strip {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(180deg, #0F0F0F 0%, #0A0A0A 100%);
+    border-bottom: 3px double var(--amber-dim);
+    box-shadow: 0 4px 24px -8px var(--zone-accent-glow);
+    transition: box-shadow 0.4s ease;
+    scrollbar-width: none;
+  }
+  .zone-strip::-webkit-scrollbar { display: none; }
+
+  .zone {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    padding: 22px 14px 26px;
+    position: relative;
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .neon-bg {
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 150px;
+    height: 150px;
+    color: var(--zone-color);
+    opacity: 0.6;
+    pointer-events: none;
+    filter:
+      drop-shadow(0 0 4px var(--zone-color))
+      drop-shadow(0 0 12px var(--zone-color));
+  }
+  .neon-bg svg { width: 100%; height: 100%; }
+  .neon-bg svg * {
+    stroke: var(--zone-color);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .neon-bg svg .fill { fill: var(--zone-color); }
+
+  .zone-eyebrow {
+    font-size: 10px;
+    color: var(--amber-dim);
+    letter-spacing: 0.3em;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+  }
+  .zone-title {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: clamp(22px, 6.5vw, 30px);
+    letter-spacing: 0.04em;
+    color: var(--zone-color);
+    line-height: 1;
+    text-shadow: 0 0 4px var(--zone-color), 0 0 12px var(--zone-color);
+    position: relative;
+    z-index: 2;
+  }
+  .zone-subtitle {
+    margin-top: 6px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: clamp(20px, 6vw, 26px);
+    letter-spacing: 0.04em;
+    color: var(--amber);
+    line-height: 1;
+    font-style: italic;
+    text-shadow: 0 0 4px var(--amber-glow);
+    position: relative;
+    z-index: 2;
+  }
+  .zone-tag {
+    margin-top: 12px;
+    font-size: 10px;
+    color: var(--amber-dim);
+    letter-spacing: 0.15em;
+    position: relative;
+    z-index: 2;
+    max-width: 60%;
+  }
+
+  .swipe-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 9px;
+    color: var(--amber-dim);
+    letter-spacing: 0.3em;
+    animation: hint-fade 5s ease-out forwards;
+    pointer-events: none;
+    z-index: 3;
+  }
+  @keyframes hint-fade {
+    0%, 50% { opacity: 0.7; }
+    100% { opacity: 0; transform: translateY(-4px); }
+  }
+
+  .page-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 14px;
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--border);
+  }
+  .page-dot {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .page-dot::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--amber-dim);
+    transition: all 0.3s ease;
+  }
+  .page-dot.active::before {
+    background: var(--zone-accent);
+    box-shadow: 0 0 8px var(--zone-accent-glow);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 14px;
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+  .meta-row .lbl { color: var(--amber-dim); }
+  .meta-row .val {
+    color: var(--amber-bright);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+  }
+  .stale-warn {
+    display: none;
+    font-size: 10px;
+    color: var(--red);
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+    animation: pulse 1s infinite;
+  }
+  .stale-warn.show { display: block; }
+
+  .col-header {
+    background: var(--bg-deep);
+    color: var(--amber-dim);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 44px 1fr 78px 78px;
+    gap: 8px;
+    align-items: center;
+    text-transform: uppercase;
+  }
+  .col-header > :nth-child(3),
+  .col-header > :nth-child(4) { text-align: right; }
+
+  .row {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 14px;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 44px 1fr 78px 78px;
+    gap: 8px;
+    align-items: center;
+    transition: background 0.12s;
+    position: relative;
+    min-height: 64px;
+  }
+  .row:active { background: var(--bg-row); }
+  .row::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: transparent;
+    transition: background 0.2s;
+  }
+  .row.expanded::before { background: var(--zone-accent); box-shadow: 0 0 8px var(--zone-accent-glow); }
+
+  /* Gate badge — boxed transit marker style */
+  .gate {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--zone-accent);
+    line-height: 1;
+    text-shadow: 0 0 6px var(--zone-accent-glow);
+    letter-spacing: 0.02em;
+    border: 1px solid var(--zone-accent);
+    background: var(--zone-accent-bg);
+    padding: 4px 0 2px;
+    text-align: center;
+    border-radius: 2px;
+    box-shadow: inset 0 0 8px var(--zone-accent-soft);
+  }
+
+  .building-block { min-width: 0; }
+  .building-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--amber);
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .building-name .deal-mark {
+    color: var(--amber-bright);
+    text-shadow: 0 0 6px var(--amber);
+    margin-right: 4px;
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .building-meta {
+    font-size: 10px;
+    color: var(--amber-dim);
+    margin-top: 3px;
+    letter-spacing: 0.05em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .price-cell { text-align: right; line-height: 1; }
+  .price {
+    font-family: 'VT323', monospace;
+    color: var(--amber-bright);
+    font-size: 22px;
+    text-shadow: 0 0 4px var(--amber-glow);
+    letter-spacing: 0.02em;
+  }
+  .price-from {
+    font-size: 9px;
+    color: var(--amber-dim);
+    display: block;
+    margin-top: 2px;
+    letter-spacing: 0.15em;
+  }
+
+  .status-cell {
+    text-align: right;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .status-cell .lbl { display: inline-flex; align-items: center; gap: 5px; }
+  .status-led {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .s-boarding { color: var(--green); }
+  .s-boarding .status-led { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 1.6s infinite; }
+  .s-limited { color: var(--amber-bright); }
+  .s-limited .status-led { background: var(--amber-bright); box-shadow: 0 0 6px var(--amber-bright); animation: pulse 0.9s infinite; }
+  .s-departing { color: var(--red); }
+  .s-departing .status-led { background: var(--red); box-shadow: 0 0 8px var(--red); animation: pulse 0.6s infinite; }
+
+  .empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--amber-dim);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    line-height: 1.6;
+  }
+  .empty .big {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    color: var(--zone-accent);
+    text-shadow: 0 0 8px var(--zone-accent-glow);
+    margin-bottom: 8px;
+    letter-spacing: 0.08em;
+  }
+
+  .details {
+    grid-column: 1 / -1;
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    display: none;
+  }
+  .row.expanded .details { display: block; animation: revealDown 0.3s ease-out; }
+  @keyframes revealDown {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .detail-cell {
+    border-left: 2px solid var(--border);
+    padding-left: 8px;
+  }
+  .detail-cell .lbl {
+    font-size: 9px;
+    color: var(--amber-dim);
+    letter-spacing: 0.12em;
+    margin-bottom: 3px;
+  }
+  .detail-cell .val {
+    font-family: 'VT323', monospace;
+    font-size: 19px;
+    color: var(--amber-bright);
+    line-height: 1;
+  }
+  .detail-meta {
+    font-size: 11px;
+    color: var(--amber);
+    line-height: 1.5;
+    padding: 8px 0;
+    border-top: 1px dashed var(--border);
+    border-bottom: 1px dashed var(--border);
+  }
+  .detail-meta strong { color: var(--amber-bright); }
+  .concession-tag {
+    margin-top: 10px;
+    padding: 9px;
+    background: linear-gradient(90deg, transparent, var(--zone-accent-soft), transparent);
+    border: 1px solid var(--zone-accent);
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--zone-accent);
+    letter-spacing: 0.18em;
+    text-shadow: 0 0 6px var(--zone-accent-glow);
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 8px var(--zone-accent-soft); }
+    50% { box-shadow: 0 0 16px var(--zone-accent-glow); }
+  }
+
+  /* Action buttons inside expanded row */
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 8px;
+    min-height: 48px;
+    background: var(--zone-accent-bg);
+    border: 1px solid var(--zone-accent);
+    color: var(--zone-accent);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    text-align: center;
+    text-shadow: 0 0 4px var(--zone-accent-glow);
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .action-btn:active {
+    background: var(--zone-accent);
+    color: #050505;
+    text-shadow: none;
+    box-shadow: 0 0 16px var(--zone-accent-glow);
+  }
+  .action-btn:active svg { stroke: #050505; }
+  .action-btn svg {
+    width: 14px; height: 14px;
+    fill: none;
+    stroke: var(--zone-accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+    transition: stroke 0.15s;
+  }
+
+  .footer {
+    padding: 18px 14px calc(80px + var(--safe-bottom));
+    background: var(--bg-deep);
+    border-top: 3px double var(--amber-dim);
+  }
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  button {
+    background: transparent;
+    border: 1px solid var(--amber-dim);
+    color: var(--amber);
+    padding: 16px 10px;
+    min-height: 48px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  button:active {
+    background: var(--bg-row);
+    border-color: var(--zone-accent);
+    color: var(--zone-accent);
+    box-shadow: 0 0 12px var(--zone-accent-glow);
+  }
+  .legend {
+    font-size: 11px;
+    color: var(--amber-dim);
+    line-height: 1.9;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+  .legend .key {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 6px;
+  }
+  .legend .key-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .flip-in {
+    animation: flipIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+    transform-origin: top center;
+    perspective: 600px;
+  }
+  @keyframes flipIn {
+    0% { opacity: 0; transform: rotateX(-65deg) translateY(-8px); }
+    60% { opacity: 1; }
+    100% { opacity: 1; transform: rotateX(0) translateY(0); }
+  }
+</style>
+</head>
+<body data-zone="embarcadero">
+  <div class="top-bar">
+    <span class="scroll">▶ SFRTA · LIVE · CACHED DAILY · DATA SOURCED 04.30.2026 · SWIPE TO CHANGE ZONE · TAP ROW FOR DETAILS · ▶ SFRTA · LIVE · CACHED DAILY · DATA SOURCED 04.30.2026 · SWIPE TO CHANGE ZONE · TAP ROW FOR DETAILS ·&nbsp;</span>
+  </div>
+
+  <div class="eyebrow-band">
+    <div class="eyebrow"><span class="dot"></span>SAN FRANCISCO RENTAL TRANSIT AUTHORITY</div>
+  </div>
+
+  <div class="zone-strip" id="zoneStrip">
+    <section class="zone" data-zone-id="embarcadero" style="--zone-color:#5DD3F0">
+      <div class="zone-eyebrow">ZONE 01 · NORTH WATERFRONT</div>
+      <div class="zone-title">EMBARCADERO</div>
+      <div class="zone-subtitle">VACANCIES ░</div>
+      <div class="zone-tag">FERRY BUILDING · CLOCK TOWER · PIER 1</div>
+      <div class="neon-bg" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <rect x="40" y="36" width="20" height="56"/>
+          <line x1="40" y1="50" x2="60" y2="50"/>
+          <line x1="40" y1="64" x2="60" y2="64"/>
+          <line x1="40" y1="78" x2="60" y2="78"/>
+          <rect x="36" y="33" width="28" height="3"/>
+          <rect x="38" y="22" width="24" height="11"/>
+          <circle cx="50" cy="14" r="9"/>
+          <line x1="50" y1="14" x2="50" y2="9"/>
+          <line x1="50" y1="14" x2="55" y2="14"/>
+          <circle cx="50" cy="14" r="1.5" class="fill"/>
+          <line x1="50" y1="5" x2="50" y2="2"/>
+        </svg>
+      </div>
+      <div class="swipe-hint">⟵ SWIPE FOR ZONES ⟶</div>
+    </section>
+
+    <section class="zone" data-zone-id="rincon" style="--zone-color:#FFD54F">
+      <div class="zone-eyebrow">ZONE 02 · EAST CUT</div>
+      <div class="zone-title">RINCON HILL</div>
+      <div class="zone-subtitle">VACANCIES ░</div>
+      <div class="zone-tag">LUXURY TOWER CLUSTER · 5 LISTINGS</div>
+      <div class="neon-bg" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <rect x="22" y="22" width="22" height="68"/>
+          <rect x="54" y="34" width="22" height="56"/>
+          <line x1="27" y1="35" x2="39" y2="35"/>
+          <line x1="27" y1="45" x2="39" y2="45"/>
+          <line x1="27" y1="55" x2="39" y2="55"/>
+          <line x1="27" y1="65" x2="39" y2="65"/>
+          <line x1="27" y1="75" x2="39" y2="75"/>
+          <line x1="27" y1="85" x2="39" y2="85"/>
+          <line x1="59" y1="45" x2="71" y2="45"/>
+          <line x1="59" y1="55" x2="71" y2="55"/>
+          <line x1="59" y1="65" x2="71" y2="65"/>
+          <line x1="59" y1="75" x2="71" y2="75"/>
+          <line x1="59" y1="85" x2="71" y2="85"/>
+          <line x1="33" y1="22" x2="33" y2="16"/>
+          <line x1="65" y1="34" x2="65" y2="28"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="zone" data-zone-id="southbeach" style="--zone-color:#4FE0C6">
+      <div class="zone-eyebrow">ZONE 03 · BAY BRIDGE</div>
+      <div class="zone-title">SOUTH BEACH</div>
+      <div class="zone-subtitle">VACANCIES ░</div>
+      <div class="zone-tag">MARINA · ORACLE PARK ADJACENT</div>
+      <div class="neon-bg" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="20" r="6"/>
+          <line x1="50" y1="26" x2="50" y2="82"/>
+          <line x1="40" y1="34" x2="60" y2="34"/>
+          <path d="M 24 58 Q 24 82, 50 84 Q 76 82, 76 58"/>
+          <line x1="24" y1="58" x2="32" y2="62"/>
+          <line x1="76" y1="58" x2="68" y2="62"/>
+          <line x1="44" y1="80" x2="56" y2="80"/>
+          <circle cx="50" cy="20" r="2.5" class="fill"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="zone" data-zone-id="missionbay" style="--zone-color:#FF5DAA">
+      <div class="zone-eyebrow">ZONE 04 · CHASE CENTER</div>
+      <div class="zone-title">MISSION BAY</div>
+      <div class="zone-subtitle">VACANCIES ░</div>
+      <div class="zone-tag">UCSF · BIOTECH · WATERFRONT TRAIL</div>
+      <div class="neon-bg" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="40" r="22"/>
+          <ellipse cx="50" cy="40" rx="22" ry="7"/>
+          <ellipse cx="50" cy="40" rx="14" ry="22"/>
+          <line x1="28" y1="40" x2="72" y2="40"/>
+          <rect x="18" y="80" width="64" height="2"/>
+          <rect x="22" y="72" width="6" height="8"/>
+          <rect x="32" y="68" width="6" height="12"/>
+          <rect x="42" y="64" width="6" height="16"/>
+          <rect x="52" y="70" width="6" height="10"/>
+          <rect x="62" y="74" width="6" height="6"/>
+          <rect x="72" y="68" width="6" height="12"/>
+        </svg>
+      </div>
+    </section>
+  </div>
+
+  <div class="page-dots" id="pageDots">
+    <div class="page-dot active" data-zone-id="embarcadero"></div>
+    <div class="page-dot" data-zone-id="rincon"></div>
+    <div class="page-dot" data-zone-id="southbeach"></div>
+    <div class="page-dot" data-zone-id="missionbay"></div>
+  </div>
+
+  <div class="meta-row">
+    <div>
+      <div class="lbl">LAST UPDATED</div>
+      <div class="val" id="updated">--:--</div>
+      <div class="stale-warn" id="staleWarn">⚠ DATA STALE</div>
+    </div>
+    <div style="text-align:right">
+      <div class="lbl">LISTINGS IN ZONE</div>
+      <div class="val" id="count">--</div>
+    </div>
+  </div>
+
+  <div class="col-header">
+    <span>GATE</span>
+    <span>BUILDING</span>
+    <span>FROM</span>
+    <span>STATUS</span>
+  </div>
+
+  <main id="board"></main>
+
+  <footer class="footer">
+    <div class="controls">
+      <button onclick="cycleSort()" id="sortBtn">⇅ SORT: GATE</button>
+      <button onclick="forceRefresh()">↻ REFRESH</button>
+    </div>
+    <div class="legend">
+      <span class="key"><span class="key-dot" style="background:#4ADE80;box-shadow:0 0 6px #4ADE80"></span>BOARDING</span>
+      <span class="key"><span class="key-dot" style="background:#FFD54F;box-shadow:0 0 6px #FFD54F"></span>LIMITED</span>
+      <span class="key"><span class="key-dot" style="background:#FF5252;box-shadow:0 0 6px #FF5252"></span>FILLING</span>
+      <br>
+      ★ = ACTIVE CONCESSION · CACHE INVALIDATES @ 00:00 LOCAL
+    </div>
+  </footer>
+
+<script>
+const ZONES = ['embarcadero', 'rincon', 'southbeach', 'missionbay'];
+
+const BUILDINGS = [
+  { gate: 'E1', zone: 'embarcadero', name: 'THE GATEWAY', address: '460 Davis Ct', avail: 7, studio: 3443, br1: 4405, br2: 6018, concession: null, concessionRank: 0, mgr: 'INDEPENDENT', phone: '+14155212552', lat: 37.7965578, lng: -122.3986275, notes: "Closest to Embarcadero proper. 1965 build, 1,254 units. Doormen in every building, Ferry Building 6 min walk." },
+  { gate: 'E2', zone: 'embarcadero', name: 'AVERY 450', address: '450 Folsom St', avail: 6, studio: 4725, br1: null, br2: null, concession: '4 WEEKS FREE', concessionRank: 4, mgr: 'RELATED', phone: '+16282392786', lat: 37.7878413, lng: -122.3942911, notes: "OMA architecture, Clodagh Design interiors. Equinox-curated gym, 60ft lap pool. 246 units / 56 stories." },
+
+  { gate: 'R1', zone: 'rincon', name: 'RINCON GREEN', address: '333 Harrison St', avail: 10, studio: 2835, br1: 3923, br2: 4990, concession: '5 WEEKS FREE', concessionRank: 5, mgr: 'INDEPENDENT', phone: '+14155466333', lat: 37.7865340, lng: -122.3914008, notes: "BMR program available. 13-mo lease required for promo. Rooftop hot tub, Bay Bridge view." },
+  { gate: 'R2', zone: 'rincon', name: 'SOLAIRE', address: '299 Fremont St', avail: 9, studio: 3724, br1: 3743, br2: 5651, concession: null, concessionRank: 0, mgr: 'GREYSTAR', phone: '+14153440411', lat: 37.7886056, lng: -122.3935493, notes: "LEED Gold high-rise. Floor-to-ceiling windows, no in-unit AC. ~10 min walk to Ferry Building." },
+  { gate: 'R3', zone: 'rincon', name: '388 BEALE', address: '388 Beale St', avail: 7, studio: null, br1: 5310, br2: 6564, concession: 'BMR PROGRAM', concessionRank: 1, mgr: 'UDR', phone: '+16282774232', lat: 37.7876342, lng: -122.3918838, notes: "Two towers w/ Bay Bridge views. 1BR & up only. BMR program via DAHLIA: $1,409–$3,754 for income-qualified." },
+  { gate: 'R4', zone: 'rincon', name: 'JASPER', address: '45 Lansing St', avail: 12, studio: 4331, br1: 5316, br2: 5390, concession: null, concessionRank: 0, mgr: 'GREYSTAR', phone: '+16283364034', lat: 37.7860198, lng: -122.3939040, notes: "Built 2016, 320 units, 40 stories. Pool, valet, sauna, movie theater. Closed Sundays." },
+  { gate: 'R5', zone: 'rincon', name: 'SPERA', address: '39 Tehama St', avail: 8, studio: null, br1: 4460, br2: 7761, concession: '6 WEEKS FREE', concessionRank: 6, mgr: 'INDEPENDENT', phone: '+18556059187', lat: 37.7872931, lng: -122.3962594, notes: "Newest building (2024). 35 stories, 403 units. 24/7 concierge, Inner Circle social club, Core Club wellness." },
+
+  { gate: 'S1', zone: 'southbeach', name: 'BAYSIDE VILLAGE', address: '3 Bayside Village Pl', avail: 25, studio: 3487, br1: 3891, br2: 5402, concession: '2 WEEKS FREE', concessionRank: 2, mgr: 'BROOKFIELD', phone: '+16283631245', lat: 37.7849894, lng: -122.3896490, notes: "Most inventory in the set. Brand-new fitness center & social lounge. Garden-style mid-rise." },
+  { gate: 'S2', zone: 'southbeach', name: 'SOUTH BEACH MARINA', address: '2 Townsend St', avail: 14, studio: null, br1: 4875, br2: 6575, concession: '2 WEEKS FREE', concessionRank: 2, mgr: 'SARES-REGIS', phone: '+18335302903', lat: 37.7820386, lng: -122.3893988, notes: "On the marina. Tennis court, pool, jacuzzi. 414 units across 3 buildings. Calmer low-rise feel." },
+
+  { gate: 'M1', zone: 'missionbay', name: 'AVALON MISSION BAY', address: '255 King St', avail: 19, studio: 3840, br1: 4325, br2: 6120, concession: null, concessionRank: 0, mgr: 'AVALONBAY', phone: '+14153544506', lat: 37.7767243, lng: -122.3931389, notes: "Most professional walk-in leasing op. Open 9–7 daily incl. weekends. Apply online during tour." },
+  { gate: 'M2', zone: 'missionbay', name: 'CHANNEL MISSION BAY', address: '185 Channel St', avail: 14, studio: 3850, br1: 4628, br2: 6844, concession: null, concessionRank: 0, mgr: 'UDR', phone: '+16282144995', lat: 37.7740703, lng: -122.3907379, notes: "Gus's Market in-building. 3-level fitness center, pool. Furthest from Embarcadero." }
+];
+
+const CACHE_KEY = 'sfrta_cache_v1';
+const PREFS_KEY = 'sfrta_prefs_v2';
+const SORT_MODES = ['gate', 'price', 'inventory', 'concession'];
+const SORT_LABELS = { gate: 'GATE', price: 'PRICE', inventory: 'AVAIL', concession: 'DEALS' };
+
+let activeZone = 'embarcadero';
+let sortMode = 'gate';
+let expanded = new Set();
+
+const fmt = n => n ? '$' + n.toLocaleString() : '—';
+const fromPrice = b => b.studio || b.br1 || b.br2 || 0;
+const minBedLabel = b => b.studio ? 'STUDIO+' : '1BR+';
+const statusFor = b => {
+  if (b.avail <= 6) return 'departing';
+  if (b.avail <= 9) return 'limited';
+  return 'boarding';
+};
+const statusLabel = s => ({ boarding: 'BOARDING', limited: 'LIMITED', departing: 'FILLING' }[s]);
+
+const PHONE_ICON = '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+const PIN_ICON = '<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+function mapUrl(b) {
+  const q = encodeURIComponent(`${b.name} ${b.address} San Francisco`);
+  return `https://www.google.com/maps/search/?api=1&query=${q}&query_place_id=&center=${b.lat},${b.lng}`;
+}
+
+function buildRow(b, idx) {
+  const isOpen = expanded.has(b.gate);
+  const status = statusFor(b);
+  const concessionMark = b.concession ? '<span class="deal-mark">★</span>' : '';
+
+  return `
+    <div class="row ${isOpen ? 'expanded' : ''} flip-in"
+         data-gate="${b.gate}"
+         style="animation-delay:${Math.min(idx * 70, 500)}ms"
+         onclick="toggleRow('${b.gate}')">
+      <div class="gate">${b.gate}</div>
+      <div class="building-block">
+        <div class="building-name">${concessionMark}${b.name}</div>
+        <div class="building-meta">${b.address.toUpperCase()}</div>
+      </div>
+      <div class="price-cell">
+        <div class="price">${fmt(fromPrice(b))}</div>
+        <div class="price-from">${minBedLabel(b)}</div>
+      </div>
+      <div class="status-cell s-${status}">
+        <span class="lbl"><span class="status-led"></span><span>${statusLabel(status)}</span></span>
+      </div>
+      <div class="details">
+        <div class="detail-grid">
+          <div class="detail-cell"><div class="lbl">STUDIO</div><div class="val">${fmt(b.studio)}</div></div>
+          <div class="detail-cell"><div class="lbl">1 BED</div><div class="val">${fmt(b.br1)}</div></div>
+          <div class="detail-cell"><div class="lbl">2 BED</div><div class="val">${fmt(b.br2)}</div></div>
+        </div>
+        <div class="detail-meta">
+          <strong>${b.avail}</strong> units listed · managed by <strong>${b.mgr}</strong><br>
+          ${b.notes}
+        </div>
+        ${b.concession ? `<div class="concession-tag">★ ${b.concession} ★</div>` : ''}
+        <div class="actions">
+          <a class="action-btn" href="tel:${b.phone}" onclick="event.stopPropagation()">
+            ${PHONE_ICON}<span>CALL LEASING</span>
+          </a>
+          <a class="action-btn" href="${mapUrl(b)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+            ${PIN_ICON}<span>DIRECTIONS</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function getZoneBuildings() {
+  let arr = BUILDINGS.filter(b => b.zone === activeZone);
+  switch(sortMode) {
+    case 'price': arr.sort((a,b) => fromPrice(a) - fromPrice(b)); break;
+    case 'inventory': arr.sort((a,b) => b.avail - a.avail); break;
+    case 'concession': arr.sort((a,b) => b.concessionRank - a.concessionRank); break;
+    default: break;
+  }
+  return arr;
+}
+
+function render() {
+  const list = getZoneBuildings();
+  const board = document.getElementById('board');
+  if (list.length === 0) {
+    board.innerHTML = '<div class="empty"><div class="big">NO VACANCIES</div>CHECK BACK SOON</div>';
+  } else {
+    board.innerHTML = list.map(buildRow).join('');
+  }
+  document.getElementById('count').textContent = list.length;
+  document.getElementById('sortBtn').textContent = '⇅ SORT: ' + SORT_LABELS[sortMode];
+}
+
+function toggleRow(gate) {
+  if (expanded.has(gate)) expanded.delete(gate);
+  else expanded.add(gate);
+  const row = document.querySelector(`.row[data-gate="${gate}"]`);
+  if (row) row.classList.toggle('expanded');
+  savePrefs();
+}
+
+function cycleSort() {
+  const idx = SORT_MODES.indexOf(sortMode);
+  sortMode = SORT_MODES[(idx + 1) % SORT_MODES.length];
+  savePrefs();
+  document.getElementById('board').innerHTML = '';
+  setTimeout(render, 20);
+}
+
+function setActiveZone(zoneId, scrollToIt) {
+  if (!ZONES.includes(zoneId)) return;
+  activeZone = zoneId;
+  document.body.dataset.zone = zoneId;
+
+  document.querySelectorAll('.page-dot').forEach(d => {
+    d.classList.toggle('active', d.dataset.zoneId === zoneId);
+  });
+
+  document.getElementById('board').innerHTML = '';
+  setTimeout(render, 20);
+
+  if (scrollToIt) {
+    const target = document.querySelector(`.zone[data-zone-id="${zoneId}"]`);
+    if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+
+  savePrefs();
+}
+
+function setupZoneSwipe() {
+  const strip = document.getElementById('zoneStrip');
+  const zones = strip.querySelectorAll('.zone');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+        const zoneId = entry.target.dataset.zoneId;
+        if (zoneId !== activeZone) setActiveZone(zoneId, false);
+      }
+    });
+  }, { root: strip, threshold: [0.6, 0.8] });
+
+  zones.forEach(z => observer.observe(z));
+
+  document.querySelectorAll('.page-dot').forEach(d => {
+    d.addEventListener('click', () => setActiveZone(d.dataset.zoneId, true));
+  });
+}
+
+function savePrefs() {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({
+      sortMode, activeZone, expanded: [...expanded]
+    }));
+  } catch(e) {}
+}
+
+function loadPrefs() {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY);
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p.sortMode && SORT_MODES.includes(p.sortMode)) sortMode = p.sortMode;
+      if (p.activeZone && ZONES.includes(p.activeZone)) activeZone = p.activeZone;
+      if (Array.isArray(p.expanded)) expanded = new Set(p.expanded);
+    }
+  } catch(e) {}
+}
+
+const todayKey = () => new Date().toISOString().slice(0, 10);
+
+function fmtTime(iso) {
+  const d = new Date(iso);
+  const M = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const pad = n => String(n).padStart(2, '0');
+  return `${M[d.getMonth()]}${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function loadOrSeedCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      const c = JSON.parse(raw);
+      if (c.day === todayKey()) {
+        document.getElementById('updated').textContent = fmtTime(c.timestamp);
+        const ageHours = (Date.now() - new Date(c.timestamp)) / 3600000;
+        if (ageHours > 18) document.getElementById('staleWarn').classList.add('show');
+        return;
+      }
+    }
+  } catch(e) {}
+  refreshCache();
+}
+
+function refreshCache() {
+  const now = new Date().toISOString();
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ day: todayKey(), timestamp: now }));
+  } catch(e) {}
+  document.getElementById('updated').textContent = fmtTime(now);
+  document.getElementById('staleWarn').classList.remove('show');
+}
+
+function forceRefresh() {
+  refreshCache();
+  document.getElementById('board').innerHTML = '';
+  setTimeout(render, 20);
+}
+
+(function init() {
+  loadPrefs();
+  loadOrSeedCache();
+  setupZoneSwipe();
+
+  document.body.dataset.zone = activeZone;
+  document.querySelectorAll('.page-dot').forEach(d => {
+    d.classList.toggle('active', d.dataset.zoneId === activeZone);
+  });
+
+  const target = document.querySelector(`.zone[data-zone-id="${activeZone}"]`);
+  if (target) target.scrollIntoView({ behavior: 'instant', inline: 'center', block: 'nearest' });
+
+  render();
+})();
+</script>
+</body>
+</html>
