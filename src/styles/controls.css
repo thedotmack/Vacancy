@@ -1,0 +1,48 @@
+.footer {
+  padding: 18px 14px calc(80px + var(--safe-bottom));
+  background: var(--bg-deep);
+  border-top: 3px double var(--amber-dim);
+}
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+button {
+  background: transparent;
+  border: 1px solid var(--amber-dim);
+  color: var(--amber);
+  padding: 16px 10px;
+  min-height: 48px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+button:active {
+  background: var(--bg-row);
+  border-color: var(--zone-accent);
+  color: var(--zone-accent);
+  box-shadow: 0 0 12px var(--zone-accent-glow);
+}
+.legend {
+  font-size: 11px;
+  color: var(--amber-dim);
+  line-height: 1.9;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+.legend .key {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 6px;
+}
+.legend .key-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
