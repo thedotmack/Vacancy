@@ -12,9 +12,13 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
+    "@vercel/node": "^5.7.15",
     "typescript": "^6.0.3",
     "vite": "^7.3.2",
     "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.1.5"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0"
   }
 }

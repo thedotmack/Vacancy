@@ -3,6 +3,7 @@ import { ZONES } from '../data/zones';
 import { savePreferences } from '../utils/preferences';
 import { getActiveZone, setActiveZone as setStateZone, getSortMode, getExpanded } from '../state';
 import { render } from './board';
+import { updateCityMap } from './city-map';
 
 export function setActiveZone(zoneId: ZoneId, scrollToIt: boolean): void {
   if (!ZONES.includes(zoneId)) return;
@@ -24,6 +25,7 @@ export function setActiveZone(zoneId: ZoneId, scrollToIt: boolean): void {
   }
 
   savePreferences(getSortMode(), getActiveZone(), getExpanded());
+  updateCityMap();
 }
 
 export function setupZoneSwipe(): void {

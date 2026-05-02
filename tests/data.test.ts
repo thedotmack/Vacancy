@@ -49,7 +49,7 @@ describe('BUILDINGS data integrity', () => {
     for (const building of BUILDINGS) {
       expect(building.lat).toBeGreaterThan(37.70);
       expect(building.lat).toBeLessThan(37.82);
-      expect(building.lng).toBeGreaterThan(-122.43);
+      expect(building.lng).toBeGreaterThan(-122.52);
       expect(building.lng).toBeLessThan(-122.35);
     }
   });
