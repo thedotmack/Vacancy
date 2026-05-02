@@ -36,45 +36,59 @@ window.__toggleMap = () => {
     container.classList.toggle('collapsed', !isCollapsed);
     container.classList.toggle('expanded', isCollapsed);
     toggle.textContent = isCollapsed ? '▲ HIDE MAP' : '▼ CITY MAP';
+    toggle.setAttribute('aria-expanded', String(isCollapsed));
   }
 };
 
 window.__submitVote = async (gate: string, isAccurate: boolean) => {
-  // Optimistic UI update
   const section = document.querySelector(`.row[data-gate="${gate}"] .accuracy-section`);
-  if (section) {
-    const btns = section.querySelectorAll('.accuracy-btn');
-    btns.forEach(btn => {
-      (btn as HTMLElement).style.opacity = '0.4';
-      (btn as HTMLElement).style.pointerEvents = 'none';
-    });
-    const countEl = section.querySelector('.accuracy-count');
-    if (countEl) {
-      const text = countEl.textContent || '0 ✓ · 0 ✗';
-      const match = text.match(/(\d+)\s*✓\s*·\s*(\d+)\s*✗/);
-      if (match) {
-        const yes = parseInt(match[1]) + (isAccurate ? 1 : 0);
-        const no = parseInt(match[2]) + (isAccurate ? 0 : 1);
-        countEl.textContent = `${yes} ✓ · ${no} ✗`;
-      }
+  if (!section) return;
+
+  const btns = section.querySelectorAll('.accuracy-btn');
+  const countEl = section.querySelector('.accuracy-count');
+  const previousText = countEl?.textContent || '0 ✓ · 0 ✗';
+
+  btns.forEach(btn => {
+    (btn as HTMLElement).style.opacity = '0.4';
+    (btn as HTMLElement).style.pointerEvents = 'none';
+  });
+  if (countEl) {
+    const match = previousText.match(/(\d+)\s*✓\s*·\s*(\d+)\s*✗/);
+    if (match) {
+      const yes = parseInt(match[1]) + (isAccurate ? 1 : 0);
+      const no = parseInt(match[2]) + (isAccurate ? 0 : 1);
+      countEl.textContent = `${yes} ✓ · ${no} ✗`;
     }
   }
-  await apiSubmitVote(gate, isAccurate);
+
+  try {
+    const result = await apiSubmitVote(gate, isAccurate);
+    if (!result) throw new Error('Vote failed');
+  } catch {
+    if (countEl) countEl.textContent = previousText;
+    btns.forEach(btn => {
+      (btn as HTMLElement).style.opacity = '1';
+      (btn as HTMLElement).style.pointerEvents = 'auto';
+    });
+  }
 };
 
 window.__submitComment = async (gate: string) => {
   const input = document.getElementById(`comment-input-${gate}`) as HTMLTextAreaElement | null;
   if (!input || !input.value.trim()) return;
   const text = input.value.trim();
-  input.value = '';
   input.disabled = true;
 
-  const result = await apiSubmitComment(gate, text);
-  input.disabled = false;
-
-  if (result) {
-    renderCommentList(gate, result.comments);
+  try {
+    const result = await apiSubmitComment(gate, text);
+    if (result) {
+      input.value = '';
+      renderCommentList(gate, result.comments);
+    }
+  } catch {
+    // Keep draft text on failure
   }
+  input.disabled = false;
 };
 
 window.__toggleComments = async (gate: string) => {

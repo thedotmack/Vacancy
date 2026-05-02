@@ -59,7 +59,7 @@
   z-index: 2;
 }
 .zone-title {
-  font-family: 'Space Mono', monospace;
+  font-family: 'Doto', 'Space Mono', monospace;
   font-weight: 700;
   font-size: clamp(28px, 8vw, 42px);
   letter-spacing: 0.04em;

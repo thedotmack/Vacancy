@@ -50,9 +50,9 @@ function buildRow(building: Building, index: number): string {
           <a class="action-btn" href="${buildGoogleMapsUrl(building)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
             ${PIN_ICON}<span>DIRECTIONS</span>
           </a>
-          <a class="action-btn" href="${building.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+          ${building.sourceUrl && /^https?:\/\//.test(building.sourceUrl) ? `<a class="action-btn" href="${building.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
             ${LINK_ICON}<span>VIEW SOURCE</span>
-          </a>
+          </a>` : ''}
         </div>
         <div class="accuracy-section" onclick="event.stopPropagation()">
           <span class="accuracy-label">IS THIS ACCURATE?</span>

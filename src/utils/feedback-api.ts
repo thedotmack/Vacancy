@@ -34,36 +34,27 @@ export async function fetchBuildingFeedback(gate: string): Promise<BuildingFeedb
 }
 
 export async function submitVote(gate: string, isAccurate: boolean): Promise<BuildingFeedback | null> {
-  try {
-    const response = await fetch(`/api/feedback/${encodeURIComponent(gate)}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ vote: isAccurate }),
-    });
-    if (!response.ok) return null;
-    const result = await response.json();
-    // Update cache
-    if (voteCountCache) {
-      voteCountCache[gate] = result.votes;
-    }
-    return result;
-  } catch {
-    return null;
+  const response = await fetch(`/api/feedback/${encodeURIComponent(gate)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ vote: isAccurate }),
+  });
+  if (!response.ok) return null;
+  const result = await response.json();
+  if (voteCountCache) {
+    voteCountCache[gate] = result.votes;
   }
+  return result;
 }
 
 export async function submitComment(gate: string, text: string): Promise<BuildingFeedback | null> {
-  try {
-    const response = await fetch(`/api/feedback/${encodeURIComponent(gate)}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comment: text }),
-    });
-    if (!response.ok) return null;
-    return await response.json();
-  } catch {
-    return null;
-  }
+  const response = await fetch(`/api/feedback/${encodeURIComponent(gate)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ comment: text }),
+  });
+  if (!response.ok) return null;
+  return await response.json();
 }
 
 export function invalidateVoteCache(): void {

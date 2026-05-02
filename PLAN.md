@@ -21,7 +21,7 @@
 
 **Comments + Voting**: Neon Postgres via Vercel Marketplace + Vercel Serverless Functions (`/api` routes).
 - Neon free tier: 100 CU-hours/month, 0.5GB storage
-- Install via Vercel Marketplace → "Neon" — credentials auto-injected as `POSTGRES_URL`
+- Install via Vercel Marketplace → "Neon" — credentials auto-injected as `DATABASE_URL`
 - Use `@neondatabase/serverless` driver (edge-compatible, HTTP-based)
 - API routes live in `/api/` directory — Vercel auto-deploys them as serverless functions
 - Anonymous feedback only — no auth required
@@ -357,7 +357,7 @@
 
 ## Architecture Summary
 
-```
+```text
 Current:  4 zones → 12 buildings → localStorage prefs → no backend
 After:   17+ zones → 40+ buildings → localStorage prefs
          + Neon Postgres (comments + votes via Vercel Functions)
