@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { NeonQueryFunction } from '@neondatabase/serverless';
 import { neon } from '@neondatabase/serverless';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 
 const BUILDING_GATE_PATTERN = /^[A-Za-z0-9]{1,10}$/;
 
@@ -10,7 +11,7 @@ function getFingerprint(req: VercelRequest): string {
   return createHash('sha256').update(`${ip}:${ua}`).digest('hex').slice(0, 16);
 }
 
-async function fetchFeedbackState(sql: ReturnType<typeof neon>, buildingGate: string, fingerprint: string) {
+async function fetchFeedbackState(sql: NeonQueryFunction<false, false>, buildingGate: string, fingerprint: string) {
   const [comments, votes, userVoteResult] = await Promise.all([
     sql`SELECT text, created_at FROM comments WHERE building_gate = ${buildingGate} ORDER BY created_at DESC LIMIT 50`,
     sql`SELECT
@@ -19,9 +20,10 @@ async function fetchFeedbackState(sql: ReturnType<typeof neon>, buildingGate: st
         FROM accuracy_votes WHERE building_gate = ${buildingGate}`,
     sql`SELECT id FROM accuracy_votes WHERE building_gate = ${buildingGate} AND voter_fingerprint = ${fingerprint} LIMIT 1`,
   ]);
+  const votesRow = votes[0] as Record<string, number> | undefined;
   return {
     comments,
-    votes: { yes: votes[0]?.yes || 0, no: votes[0]?.no || 0 },
+    votes: { yes: votesRow?.yes || 0, no: votesRow?.no || 0 },
     userVoted: userVoteResult.length > 0,
   };
 }
