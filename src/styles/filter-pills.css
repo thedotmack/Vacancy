@@ -1,0 +1,64 @@
+/* ============================================================
+   FILTER PILLS — Studio+ / Pet Friendly / Promos
+   Toggles persist in URL hash via filter-state.ts
+   ============================================================ */
+
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 14px 12px;
+  flex-shrink: 0;
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--cyan);
+  border-radius: 999px;
+  color: var(--cyan-bright);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  cursor: pointer;
+  text-shadow: 0 0 4px var(--cyan-glow);
+  transition: border-color 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
+  min-height: auto;
+}
+
+.filter-pill .filter-pill-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.filter-pill .filter-pill-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0;
+}
+.filter-pill .filter-pill-icon svg [stroke] { stroke: currentColor; }
+
+.filter-pill:active {
+  background: var(--cyan-soft);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.filter-pill.is-active {
+  background: var(--magenta-soft);
+  border-color: var(--magenta);
+  color: var(--magenta-bright);
+  text-shadow: 0 0 4px var(--magenta-glow);
+  box-shadow: 0 0 14px -4px var(--magenta-glow);
+}
+.filter-pill.is-active:active {
+  background: rgba(255, 77, 159, 0.18);
+}

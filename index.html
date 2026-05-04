@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="Live SF rental vacancies: Embarcadero, Rincon Hill, South Beach, Mission Bay. Prices, availability, concessions updated daily.">
+  <meta name="description" content="Live SF rental vacancies — neighborhood-by-neighborhood overview with prices, availability, perks, walk times.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <meta property="og:title" content="SFRTA · Rental Vacancies">
-  <meta property="og:description" content="SF rental departure board — live vacancy tracker for Embarcadero, Rincon Hill, South Beach, Mission Bay">
+  <meta property="og:description" content="SF rental departure board — live vacancy tracker for every neighborhood.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -23,43 +23,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100;300;500;700;900&family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body data-zone="embarcadero">
-  <div class="top-bar">
-    <span class="scroll">&#9654; SFRTA · LIVE · CACHED DAILY · DATA SOURCED 04.30.2026 · SWIPE TO CHANGE ZONE · TAP ROW FOR DETAILS · &#9654; SFRTA · LIVE · CACHED DAILY · DATA SOURCED 04.30.2026 · SWIPE TO CHANGE ZONE · TAP ROW FOR DETAILS ·&nbsp;</span>
-  </div>
-
-  <div class="eyebrow-band">
-    <div class="eyebrow">
-      <span class="dot"></span>
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-      DOT MATRIX &middot; SFRTA
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-    </div>
-  </div>
-
-  <div class="map-toggle" id="mapToggle">
-    <button onclick="window.__toggleMap()" aria-controls="cityMapContainer" aria-expanded="false">&#9660; CITY MAP &middot; ALL VACANCIES</button>
-  </div>
-  <div class="city-map-container collapsed" id="cityMapContainer" role="region" aria-label="City map">
-    <div id="cityMap"></div>
-  </div>
-
   <main class="zone-pages" id="zonePages" aria-label="Zones"><!-- panels rendered by JS --></main>
 
-  <div class="page-dots" id="pageDots"><!-- dots rendered by JS --></div>
+  <div id="buildingDetailRoot" aria-hidden="true"></div>
 
-  <footer class="footer">
-    <div class="controls">
-      <button onclick="window.__cycleSort()" id="sortBtn">&#8693; SORT: GATE</button>
-      <button onclick="window.__forceRefresh()">&#8635; REFRESH</button>
-    </div>
-    <div class="legend">
-      <span class="key"><span class="key-dot" style="background:#4ADE80;box-shadow:0 0 6px #4ADE80"></span>BOARDING</span>
-      <span class="key"><span class="key-dot" style="background:#FFD54F;box-shadow:0 0 6px #FFD54F"></span>LIMITED</span>
-      <span class="key"><span class="key-dot" style="background:#FF5252;box-shadow:0 0 6px #FF5252"></span>FILLING</span>
-      <br>
-      &#9733; = ACTIVE CONCESSION &middot; CACHE INVALIDATES @ 00:00 LOCAL
-    </div>
-  </footer>
+  <div class="page-dots" id="pageDots"><!-- dots rendered by JS --></div>
 
   <script type="module" src="/src/main.ts"></script>
 </body>
