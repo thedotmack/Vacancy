@@ -1,23 +1,4 @@
-.footer {
-  padding: 12px 14px calc(12px + var(--safe-bottom));
-  background: var(--bg-deep);
-  border-top: 1px solid var(--cyan-faint);
-  position: relative;
-  z-index: 5;
-}
-.controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.controls button {
-  padding: 12px 12px;
-  min-height: 44px;
-  font-size: 10px;
-  letter-spacing: 0.22em;
-}
-
+/* Global button reset — every component layers on top of this. */
 button {
   background: transparent;
   border: 1px solid var(--cyan);
@@ -39,24 +20,4 @@ button:active {
   border-color: var(--cyan-bright);
   text-shadow: none;
   box-shadow: 0 0 16px var(--cyan-glow);
-}
-
-.legend {
-  font-size: 10px;
-  color: var(--cyan-dim);
-  line-height: 1.9;
-  letter-spacing: 0.14em;
-  text-align: center;
-  font-weight: 700;
-}
-.legend .key {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin: 0 8px;
-}
-.legend .key-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  display: inline-block;
 }

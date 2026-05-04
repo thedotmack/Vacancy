@@ -1,9 +1,7 @@
 import './styles/base.css';
 import './styles/zones.css';
-import './styles/board.css';
 import './styles/controls.css';
 import './styles/animations.css';
-import './styles/map.css';
 import './styles/app-bar.css';
 import './styles/building-card.css';
 import './styles/filter-pills.css';
@@ -146,11 +144,6 @@ function init(): void {
   // otherwise fall back to the saved active zone.
   const activeZone = initialRoute.kind === 'zone' ? initialRoute.id : getActiveZone();
   document.body.dataset.zone = activeZone;
-
-  document.querySelectorAll('.page-dot').forEach(dot => {
-    const element = dot as HTMLElement;
-    element.classList.toggle('active', element.dataset.zoneId === activeZone);
-  });
 
   render();
 

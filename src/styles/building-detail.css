@@ -838,6 +838,138 @@
 }
 
 /* ============================================================
+   ACCURACY + COMMENTS — lifted from the old board.css so this is
+   the only owner now that the inline-expand rows are gone.
+   ============================================================ */
+
+.accuracy-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px 0 0;
+  border-top: 1px dashed var(--cyan-faint);
+  flex-wrap: wrap;
+}
+.accuracy-label {
+  font-size: 9px;
+  color: var(--cyan-dim);
+  letter-spacing: 0.22em;
+  margin-right: 4px;
+  font-weight: 700;
+}
+.accuracy-btn {
+  background: transparent;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-pill);
+  color: var(--cyan-bright);
+  font-family: 'Doto', 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 6px 14px;
+  min-height: 32px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-shadow: 0 0 4px var(--cyan-glow);
+}
+.accuracy-btn:active {
+  background: var(--cyan);
+  color: #000;
+  text-shadow: none;
+}
+.accuracy-count {
+  font-family: 'Doto', 'VT323', monospace;
+  font-size: 13px;
+  color: var(--white);
+  margin-left: auto;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 4px var(--cyan-glow);
+}
+
+.comment-section {
+  margin-top: 10px;
+  border-top: 1px dashed var(--cyan-faint);
+  padding-top: 10px;
+}
+.comment-toggle {
+  background: none;
+  border: none;
+  color: var(--cyan-dim);
+  font-family: 'Doto', 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  padding: 4px 0;
+  min-height: auto;
+  font-weight: 700;
+}
+.comment-toggle:hover { color: var(--cyan-bright); }
+.comment-form {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.comment-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--cyan-faint);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: 'Doto', 'Space Mono', monospace;
+  font-size: 12px;
+  padding: 8px 10px;
+  resize: none;
+  outline: none;
+  letter-spacing: 0.04em;
+}
+.comment-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-soft); }
+.comment-input::placeholder { color: var(--cyan-dim); }
+.comment-submit {
+  background: transparent;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-pill);
+  color: var(--cyan-bright);
+  font-family: 'Doto', 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  padding: 8px 14px;
+  cursor: pointer;
+  min-height: auto;
+  white-space: nowrap;
+  text-shadow: 0 0 4px var(--cyan-glow);
+}
+.comment-submit:active { background: var(--cyan); color: #000; text-shadow: none; }
+.comment-list { margin-top: 8px; }
+.comment-item {
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--cyan-faint);
+}
+.comment-text {
+  font-size: 12px;
+  color: var(--white);
+  line-height: 1.45;
+  word-break: break-word;
+  letter-spacing: 0.02em;
+}
+.comment-time {
+  font-size: 8px;
+  color: var(--cyan-dim);
+  letter-spacing: 0.18em;
+  margin-top: 4px;
+  font-weight: 700;
+}
+.comment-loading,
+.comment-empty {
+  font-size: 9px;
+  color: var(--cyan-dim);
+  letter-spacing: 0.2em;
+  padding: 8px 0;
+  font-weight: 700;
+}
+
+/* ============================================================
    TABLET / DESKTOP — cap the panel like a "phone-in-frame"
    ============================================================ */
 

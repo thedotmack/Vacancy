@@ -90,12 +90,7 @@ body {
   flex-direction: column;
   transition: background 0.4s ease;
 }
-body > .top-bar,
-body > .eyebrow-band,
-body > .map-toggle,
-body > .city-map-container,
-body > .page-dots,
-body > .footer { flex-shrink: 0; }
+body > #buildingDetailRoot { flex-shrink: 0; }
 
 /* === Atmospheric layers — dot grid + zone tint vignette === */
 body::before {
@@ -123,117 +118,6 @@ body::after {
   pointer-events: none;
   z-index: 2;
 }
-
-/* === Top scrolling ticker (telemetry strip) === */
-.top-bar {
-  background: var(--bg-deep);
-  border-bottom: 1px solid var(--cyan-faint);
-  padding: 5px 12px;
-  padding-top: calc(5px + var(--safe-top));
-  font-size: 9px;
-  letter-spacing: 0.28em;
-  color: var(--cyan-dim);
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-  z-index: 5;
-}
-.top-bar .scroll {
-  display: inline-block;
-  animation: scroll 40s linear infinite;
-  text-shadow: 0 0 4px var(--cyan-glow);
-}
-
-/* === Eyebrow brand band — "DOT MATRIX" header strip === */
-.eyebrow-band {
-  background: var(--bg-deep);
-  padding: 10px 14px 9px;
-  padding-top: 10px;
-  border-bottom: 1px solid var(--cyan-faint);
-  position: relative;
-  z-index: 5;
-}
-.eyebrow {
-  font-size: 11px;
-  color: var(--cyan-bright);
-  letter-spacing: 0.32em;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-shadow: 0 0 8px var(--cyan-glow), 0 0 1px var(--cyan-bright);
-}
-.eyebrow .dot {
-  width: 6px; height: 6px;
-  background: var(--green);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--green);
-  animation: pulse 1.5s ease-in-out infinite;
-  flex-shrink: 0;
-}
-.eyebrow .brand-mark {
-  display: inline-grid;
-  grid-template-columns: repeat(3, 3px);
-  grid-template-rows: repeat(3, 3px);
-  gap: 1px;
-  flex-shrink: 0;
-}
-.eyebrow .brand-mark i {
-  width: 3px; height: 3px;
-  background: var(--cyan-bright);
-  border-radius: 1px;
-  box-shadow: 0 0 4px var(--cyan-glow);
-}
-
-/* === Meta row inside zone (legacy hooks) === */
-.meta-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 12px 14px;
-  background: var(--bg-deep);
-  border-bottom: 1px solid var(--cyan-faint);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-}
-.meta-row .lbl { color: var(--cyan-dim); }
-.meta-row .val {
-  color: var(--white);
-  font-family: 'Doto', 'VT323', monospace;
-  font-size: 22px;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 6px var(--cyan-glow);
-}
-.stale-warn {
-  display: none;
-  font-size: 10px;
-  color: var(--red);
-  margin-top: 4px;
-  letter-spacing: 0.1em;
-  animation: pulse 1s infinite;
-}
-.stale-warn.show { display: block; }
-
-/* === Column header for board (kept as compact taxonomy strip) === */
-.col-header {
-  background: transparent;
-  color: var(--cyan-dim);
-  font-size: 9px;
-  letter-spacing: 0.24em;
-  padding: 8px 18px 6px;
-  display: grid;
-  grid-template-columns: 44px 1fr 78px 70px;
-  gap: 8px;
-  align-items: center;
-  text-transform: uppercase;
-  border-bottom: 1px dashed var(--cyan-faint);
-}
-.col-header > :nth-child(3),
-.col-header > :nth-child(4) { text-align: right; }
 
 /* === Empty state === */
 .empty {

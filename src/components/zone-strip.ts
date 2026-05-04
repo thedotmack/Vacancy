@@ -164,21 +164,13 @@ function buildZonePageHTML(zoneId: ZoneId): string {
 }
 
 /**
- * Build the 23 zone panels into #zonePages and the page-dot indicators
- * into #pageDots. Card lists are populated by `render()` so filter changes
- * can re-render without rebuilding the whole panel.
+ * Build the 23 zone panels into #zonePages. Card lists are populated by
+ * `render()` so filter changes can re-render without rebuilding the panel.
  */
 export function buildZonePages(): void {
   const container = document.getElementById('zonePages');
   if (container) {
     container.innerHTML = ZONES.map(buildZonePageHTML).join('');
-  }
-
-  const dots = document.getElementById('pageDots');
-  if (dots) {
-    dots.innerHTML = ZONES.map(z =>
-      `<button class="page-dot" data-zone-id="${z}" aria-label="${z}"></button>`
-    ).join('');
   }
 
   wireZoneInteractions();
@@ -301,11 +293,6 @@ export function setActiveZone(zoneId: ZoneId, scrollToIt: boolean): void {
   setStateZone(zoneId);
   document.body.dataset.zone = zoneId;
 
-  document.querySelectorAll('.page-dot').forEach(dot => {
-    const el = dot as HTMLElement;
-    el.classList.toggle('active', el.dataset.zoneId === zoneId);
-  });
-
   if (scrollToIt) {
     const pages = document.getElementById('zonePages');
     const target = document.querySelector<HTMLElement>(`.zone-page[data-zone-id="${zoneId}"]`);
@@ -360,11 +347,4 @@ export function setupZoneSwipe(): void {
       scrollEndTimer = window.setTimeout(detectActiveZone, 140);
     }, { passive: true });
   }
-
-  document.querySelectorAll('.page-dot').forEach(dot => {
-    dot.addEventListener('click', () => {
-      const zoneId = (dot as HTMLElement).dataset.zoneId as ZoneId;
-      setActiveZone(zoneId, true);
-    });
-  });
 }
