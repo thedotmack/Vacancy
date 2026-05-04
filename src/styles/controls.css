@@ -1,14 +1,20 @@
 .footer {
-  padding: 18px 14px calc(80px + var(--safe-bottom));
+  padding: 12px 14px calc(12px + var(--safe-bottom));
   background: var(--bg-deep);
-  border-top: 3px double var(--amber-dim);
+  border-top: 2px double var(--amber-dim);
 }
 .controls {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
 }
+.controls button {
+  padding: 12px 10px;
+  min-height: 44px;
+  font-size: 11px;
+}
+.legend { font-size: 10px; line-height: 1.6; }
 button {
   background: transparent;
   border: 1px solid var(--amber-dim);

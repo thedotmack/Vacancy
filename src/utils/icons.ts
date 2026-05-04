@@ -3,3 +3,5 @@ export const PHONE_ICON = '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0
 export const PIN_ICON = '<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
 
 export const LINK_ICON = '<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+
+export const KEY_ICON = '<svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><line x1="10.85" y1="12.15" x2="20" y2="3"/><line x1="18" y1="5" x2="21" y2="8"/><line x1="15" y1="8" x2="18" y2="11"/></svg>';

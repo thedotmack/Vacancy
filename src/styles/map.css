@@ -8,16 +8,15 @@
   max-height: 0;
 }
 .city-map-container.expanded {
-  max-height: 600px;
+  max-height: 320px;
 }
 
 .map-toggle {
   display: flex;
   justify-content: center;
-  padding: 8px;
+  padding: 6px 8px;
   background: var(--bg-deep);
   border-bottom: 1px solid var(--border);
-  cursor: pointer;
 }
 .map-toggle button {
   background: none;
@@ -33,8 +32,9 @@
 
 .city-map-svg {
   width: 100%;
-  max-width: 400px;
-  margin: 16px auto;
+  max-width: 380px;
+  max-height: 300px;
+  margin: 8px auto;
   display: block;
 }
 
@@ -44,17 +44,31 @@
   stroke-width: 0.5;
   transition: opacity 0.3s, filter 0.3s;
 }
-.map-zone-inactive {
-  opacity: 0.25;
-}
+.map-zone-inactive { opacity: 0.18; }
 .map-zone-active {
-  opacity: 1;
+  opacity: 0.9;
   filter: drop-shadow(0 0 6px var(--zone-accent)) drop-shadow(0 0 12px var(--zone-accent));
 }
-.map-zone:hover {
-  opacity: 0.8;
-}
+.map-zone:hover { opacity: 0.7; }
 
-.city-outline {
+.city-outline { pointer-events: none; }
+
+/* ============================================================
+   PINS — one per building, with price label.
+   ============================================================ */
+
+.map-pin { cursor: pointer; transition: transform 0.2s, opacity 0.25s; }
+.map-pin-inactive { opacity: 0.55; }
+.map-pin-active { opacity: 1; }
+.map-pin-active .map-pin-halo { opacity: 0.4; }
+.map-pin-active .map-pin-dot { r: 4.5; }
+.map-pin:active { transform: scale(1.15); }
+
+.map-pin-halo { transition: opacity 0.25s; }
+.map-pin-dot { transition: r 0.25s; }
+.map-pin-label {
+  font-family: 'Doto', 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   pointer-events: none;
 }

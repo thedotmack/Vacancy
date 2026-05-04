@@ -7,7 +7,7 @@ import './styles/map.css';
 
 import { loadPreferences } from './utils/preferences';
 import { loadOrSeedCache, forceRefresh } from './utils/cache';
-import { setupZoneSwipe } from './components/zone-strip';
+import { buildZonePages, setupZoneSwipe } from './components/zone-strip';
 import { render, toggleRow, cycleSort } from './components/board';
 import { renderCityMap } from './components/city-map';
 import { initState, getActiveZone } from './state';
@@ -137,7 +137,9 @@ function init(): void {
   const prefs = loadPreferences();
   initState(prefs);
   loadOrSeedCache();
-  setupZoneSwipe();
+
+  // Build the 23 zone panels (DOM) before wiring up swipe & rendering boards.
+  buildZonePages();
 
   const activeZone = getActiveZone();
   document.body.dataset.zone = activeZone;
@@ -147,11 +149,16 @@ function init(): void {
     element.classList.toggle('active', element.dataset.zoneId === activeZone);
   });
 
-  const target = document.querySelector(`.zone[data-zone-id="${activeZone}"]`);
-  if (target) target.scrollIntoView({ behavior: 'instant' as ScrollBehavior, inline: 'center', block: 'nearest' });
-
   render();
   renderCityMap();
+
+  // Jump (no animation) to the saved active zone before wiring scroll detection,
+  // so the initial scroll position doesn't fire a spurious "active zone changed".
+  const pages = document.getElementById('zonePages');
+  const target = document.querySelector<HTMLElement>(`.zone-page[data-zone-id="${activeZone}"]`);
+  if (pages && target) pages.scrollLeft = target.offsetLeft;
+
+  setupZoneSwipe();
 }
 
 document.addEventListener('DOMContentLoaded', init);

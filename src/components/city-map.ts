@@ -1,16 +1,43 @@
 import type { ZoneId } from '../types';
 import { ZONE_COLORS, NEIGHBORHOOD_PATHS, SF_CITY_OUTLINE } from '../data/map-polygons';
 import { ZONE_METADATA } from '../data/zones';
+import { BUILDINGS } from '../data/buildings';
+import { lowestPrice } from '../utils/formatters';
 import { getActiveZone } from '../state';
 import { setActiveZone } from './zone-strip';
 
-/** Look up a human-readable title for a zone ID. */
+const VIEWBOX_W = 400;
+const VIEWBOX_H = 500;
+
+// Bounding box for SF lat/lng range, tuned so pin positions sit
+// inside the corresponding neighborhood polygons.
+const LNG_MIN = -122.515;
+const LNG_MAX = -122.380;
+const LAT_MAX = 37.815;
+const LAT_MIN = 37.730;
+
+const PIN_X_MIN = 12;
+const PIN_X_MAX = 372;
+const PIN_Y_MIN = 28;
+const PIN_Y_MAX = 442;
+
+function latLngToSvg(lat: number, lng: number): { x: number; y: number } {
+  const x = PIN_X_MIN + ((lng - LNG_MIN) / (LNG_MAX - LNG_MIN)) * (PIN_X_MAX - PIN_X_MIN);
+  const y = PIN_Y_MIN + ((LAT_MAX - lat) / (LAT_MAX - LAT_MIN)) * (PIN_Y_MAX - PIN_Y_MIN);
+  return { x: Math.max(PIN_X_MIN, Math.min(PIN_X_MAX, x)), y: Math.max(PIN_Y_MIN, Math.min(PIN_Y_MAX, y)) };
+}
+
+function priceLabel(price: number): string {
+  if (!price) return '—';
+  if (price >= 1000) return '$' + (price / 1000).toFixed(price % 1000 === 0 ? 0 : 1) + 'K';
+  return '$' + price;
+}
+
 function zoneTitleForId(zoneId: string): string {
   const meta = ZONE_METADATA.find(m => m.id === zoneId);
   return meta ? meta.title : zoneId;
 }
 
-/** Called once on init — builds the SVG and inserts it into #cityMap. */
 export function renderCityMap(): void {
   const container = document.getElementById('cityMap');
   if (!container) return;
@@ -29,17 +56,30 @@ export function renderCityMap(): void {
     pathsMarkup += `<path d="${pathData}" class="map-zone" data-zone="${zoneId}" fill="url(#map-dots-${zoneId})" aria-label="${title}" />\n`;
   }
 
-  const svgMarkup = `<svg viewBox="0 0 400 500" class="city-map-svg">
+  // Pins: one per building, with a small dot + price label.
+  let pinsMarkup = '';
+  for (const b of BUILDINGS) {
+    const { x, y } = latLngToSvg(b.lat, b.lng);
+    const color = ZONE_COLORS[b.zone] ?? '#FFB400';
+    const label = priceLabel(lowestPrice(b));
+    pinsMarkup += `<g class="map-pin" data-gate="${b.gate}" data-zone="${b.zone}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" aria-label="${b.name} ${label}">
+      <circle class="map-pin-halo" r="9" fill="${color}" opacity="0.18"/>
+      <circle class="map-pin-dot" r="3.5" fill="#0A0A0A" stroke="${color}" stroke-width="1.5"/>
+      <text class="map-pin-label" x="6" y="2" font-size="9" fill="${color}" stroke="#0A0A0A" stroke-width="2.5" paint-order="stroke">${label}</text>
+    </g>\n`;
+  }
+
+  const svgMarkup = `<svg viewBox="0 0 ${VIEWBOX_W} ${VIEWBOX_H}" class="city-map-svg" role="img" aria-label="San Francisco map of vacancies">
   <defs>
     ${patternsMarkup}
   </defs>
   <path d="${SF_CITY_OUTLINE}" class="city-outline" fill="none" stroke="rgba(255,180,0,0.15)" stroke-width="1"/>
   ${pathsMarkup}
+  <g class="map-pins">${pinsMarkup}</g>
 </svg>`;
 
   container.innerHTML = svgMarkup;
 
-  // Attach click handlers to each zone path
   container.querySelectorAll<SVGPathElement>('.map-zone').forEach(path => {
     path.addEventListener('click', () => {
       const zoneId = path.dataset.zone as ZoneId | undefined;
@@ -50,18 +90,40 @@ export function renderCityMap(): void {
     });
   });
 
-  // Set initial active/inactive state
+  container.querySelectorAll<SVGGElement>('.map-pin').forEach(pin => {
+    pin.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const zoneId = pin.dataset.zone as ZoneId | undefined;
+      const gate = pin.dataset.gate;
+      if (zoneId) {
+        setActiveZone(zoneId, true);
+        updateCityMap();
+        if (gate) {
+          // After the panel scrolls in, scroll the matching row into view.
+          setTimeout(() => {
+            const row = document.querySelector(`.zone-page[data-zone-id="${zoneId}"] .row[data-gate="${gate}"]`);
+            if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 350);
+        }
+      }
+    });
+  });
+
   updateCityMap();
 }
 
-/** Called whenever the active zone changes — updates CSS classes on map paths. */
 export function updateCityMap(): void {
   const activeZone = getActiveZone();
-  const paths = document.querySelectorAll<SVGPathElement>('.map-zone');
 
-  paths.forEach(path => {
+  document.querySelectorAll<SVGPathElement>('.map-zone').forEach(path => {
     const isActive = path.dataset.zone === activeZone;
     path.classList.toggle('map-zone-active', isActive);
     path.classList.toggle('map-zone-inactive', !isActive);
+  });
+
+  document.querySelectorAll<SVGGElement>('.map-pin').forEach(pin => {
+    const isActive = pin.dataset.zone === activeZone;
+    pin.classList.toggle('map-pin-active', isActive);
+    pin.classList.toggle('map-pin-inactive', !isActive);
   });
 }

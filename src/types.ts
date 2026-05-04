@@ -19,6 +19,7 @@ export interface Building {
   lng: number;
   notes: string;
   sourceUrl: string;
+  tourUrl?: string;
 }
 
 export interface BuildingComment {

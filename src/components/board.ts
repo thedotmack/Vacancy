@@ -1,8 +1,8 @@
-import type { Building } from '../types';
+import type { Building, ZoneId } from '../types';
 import { BUILDINGS } from '../data/buildings';
-import { SORT_MODES, SORT_LABELS } from '../data/zones';
+import { SORT_MODES, SORT_LABELS, ZONES } from '../data/zones';
 import { formatPrice, lowestPrice, minimumBedLabel, statusForAvailability, statusDisplayLabel, buildGoogleMapsUrl } from '../utils/formatters';
-import { PHONE_ICON, PIN_ICON, LINK_ICON } from '../utils/icons';
+import { PHONE_ICON, PIN_ICON, LINK_ICON, KEY_ICON } from '../utils/icons';
 import { savePreferences } from '../utils/preferences';
 import { getActiveZone, getSortMode, setSortMode, getExpanded, toggleExpanded } from '../state';
 import { fetchAllVoteCounts } from '../utils/feedback-api';
@@ -14,6 +14,9 @@ function buildRow(building: Building, index: number): string {
   const status = statusForAvailability(building);
   const concessionMark = building.concession ? '<span class="deal-mark">★</span>' : '';
   const votes = voteCounts[building.gate] || { yes: 0, no: 0 };
+  const tourTarget = building.tourUrl || building.sourceUrl;
+  const hasTour = tourTarget && /^https?:\/\//.test(tourTarget);
+  const hasSource = building.sourceUrl && /^https?:\/\//.test(building.sourceUrl);
 
   return `
     <div class="row ${isOpen ? 'expanded' : ''} flip-in"
@@ -43,15 +46,18 @@ function buildRow(building: Building, index: number): string {
           ${building.notes}
         </div>
         ${building.concession ? `<div class="concession-tag">★ ${building.concession} ★</div>` : ''}
-        <div class="actions" style="grid-template-columns: 1fr 1fr 1fr">
+        ${hasTour ? `<a class="action-btn action-btn-primary" href="${tourTarget}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+          ${KEY_ICON}<span>BOOK SELF-GUIDED TOUR</span>
+        </a>` : ''}
+        <div class="actions">
           <a class="action-btn" href="tel:${building.phone}" onclick="event.stopPropagation()">
-            ${PHONE_ICON}<span>CALL LEASING</span>
+            ${PHONE_ICON}<span>CALL</span>
           </a>
           <a class="action-btn" href="${buildGoogleMapsUrl(building)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-            ${PIN_ICON}<span>DIRECTIONS</span>
+            ${PIN_ICON}<span>MAP</span>
           </a>
-          ${building.sourceUrl && /^https?:\/\//.test(building.sourceUrl) ? `<a class="action-btn" href="${building.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-            ${LINK_ICON}<span>VIEW SOURCE</span>
+          ${hasSource ? `<a class="action-btn" href="${building.sourceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+            ${LINK_ICON}<span>WEBSITE</span>
           </a>` : ''}
         </div>
         <div class="accuracy-section" onclick="event.stopPropagation()">
@@ -75,10 +81,9 @@ function buildRow(building: Building, index: number): string {
   `;
 }
 
-function getZoneBuildings(): Building[] {
-  const activeZone = getActiveZone();
+function buildingsForZone(zone: ZoneId): Building[] {
   const sortMode = getSortMode();
-  const filtered = BUILDINGS.filter(b => b.zone === activeZone);
+  const filtered = BUILDINGS.filter(b => b.zone === zone);
   switch (sortMode) {
     case 'price': filtered.sort((a, b) => lowestPrice(a) - lowestPrice(b)); break;
     case 'inventory': filtered.sort((a, b) => b.avail - a.avail); break;
@@ -88,34 +93,34 @@ function getZoneBuildings(): Building[] {
   return filtered;
 }
 
-export async function render(): Promise<void> {
-  // Fetch vote counts (non-blocking — render with cached data, update when ready)
+/**
+ * Render all 23 zone boards into their individual containers.
+ * Called once on init and again whenever sort mode changes.
+ */
+export function render(): void {
+  ZONES.forEach(zone => {
+    const list = buildingsForZone(zone);
+    const board = document.getElementById(`board-${zone}`);
+    if (!board) return;
+    board.innerHTML = list.length === 0
+      ? '<div class="empty"><div class="big">NO VACANCIES</div>CHECK BACK SOON</div>'
+      : list.map((b, i) => buildRow(b, i)).join('');
+
+    const countEl = document.getElementById(`count-${zone}`);
+    if (countEl) countEl.textContent = String(list.length);
+  });
+
+  // Vote counts come from the API — fetch in background and patch counts in.
   fetchAllVoteCounts().then(counts => {
     voteCounts = counts;
-    // Re-render vote counts in any open rows
-    document.querySelectorAll('.accuracy-count').forEach(el => {
-      const row = el.closest('.row');
-      if (row) {
-        const gate = (row as HTMLElement).dataset.gate;
-        if (gate && voteCounts[gate]) {
-          el.textContent = `${voteCounts[gate].yes} ✓ · ${voteCounts[gate].no} ✗`;
-        }
+    document.querySelectorAll<HTMLElement>('.accuracy-count').forEach(el => {
+      const row = el.closest('.row') as HTMLElement | null;
+      const gate = row?.dataset.gate;
+      if (gate && voteCounts[gate]) {
+        el.textContent = `${voteCounts[gate].yes} ✓ · ${voteCounts[gate].no} ✗`;
       }
     });
   });
-
-  const list = getZoneBuildings();
-  const board = document.getElementById('board');
-  if (!board) return;
-
-  if (list.length === 0) {
-    board.innerHTML = '<div class="empty"><div class="big">NO VACANCIES</div>CHECK BACK SOON</div>';
-  } else {
-    board.innerHTML = list.map(buildRow).join('');
-  }
-
-  const countElement = document.getElementById('count');
-  if (countElement) countElement.textContent = String(list.length);
 
   const sortBtn = document.getElementById('sortBtn');
   if (sortBtn) sortBtn.textContent = '⇅ SORT: ' + SORT_LABELS[getSortMode()];
@@ -123,8 +128,9 @@ export async function render(): Promise<void> {
 
 export function toggleRow(gate: string): void {
   toggleExpanded(gate);
-  const row = document.querySelector(`.row[data-gate="${gate}"]`);
-  if (row) row.classList.toggle('expanded');
+  document.querySelectorAll(`.row[data-gate="${gate}"]`).forEach(row => {
+    row.classList.toggle('expanded');
+  });
   savePreferences(getSortMode(), getActiveZone(), getExpanded());
 }
 
@@ -132,7 +138,5 @@ export function cycleSort(): void {
   const currentIndex = SORT_MODES.indexOf(getSortMode());
   setSortMode(SORT_MODES[(currentIndex + 1) % SORT_MODES.length]);
   savePreferences(getSortMode(), getActiveZone(), getExpanded());
-  const board = document.getElementById('board');
-  if (board) board.innerHTML = '';
-  setTimeout(render, 20);
+  render();
 }

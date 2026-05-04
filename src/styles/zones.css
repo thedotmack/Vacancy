@@ -1,44 +1,79 @@
-.zone-strip {
+/* ============================================================
+   ZONE PAGES — whole-page horizontal snap container
+   Each panel = 100vw, snaps into view, scrolls vertically inside.
+   ============================================================ */
+
+.zone-pages {
   display: flex;
+  flex-direction: row;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  background: linear-gradient(180deg, #0F0F0F 0%, #0A0A0A 100%);
-  border-bottom: 3px double var(--amber-dim);
-  box-shadow: 0 4px 24px -8px var(--zone-accent-glow);
-  transition: box-shadow 0.4s ease;
   scrollbar-width: none;
+  /* take the rest of the viewport height after fixed-height bars */
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--bg);
+  /* Allow horizontal pan-x at the page level; vertical pan happens inside .zone-page */
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
 }
-.zone-strip::-webkit-scrollbar { display: none; }
+.zone-pages::-webkit-scrollbar { display: none; }
 
-.zone {
-  flex: 0 0 100%;
-  scroll-snap-align: center;
+.zone-page {
+  flex: 0 0 100vw;
+  width: 100vw;
+  scroll-snap-align: start;
   scroll-snap-stop: always;
-  padding: 22px 14px 26px;
-  position: relative;
-  min-height: 170px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  position: relative;
+}
+.zone-page::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   ZONE HERO — compact header inside each panel
+   ============================================================ */
+
+.zone-hero {
+  position: relative;
+  padding: 18px 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 2px solid var(--zone-color, var(--amber-dim));
+  box-shadow: 0 4px 24px -10px var(--zone-color, var(--amber-glow));
+  flex-shrink: 0;
   overflow: hidden;
+  min-height: 100px;
+}
+.zone-hero-text {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .neon-bg {
   position: absolute;
-  right: -16px;
+  right: -10px;
   top: 50%;
   transform: translateY(-50%);
-  width: 150px;
-  height: 150px;
+  width: 110px;
+  height: 110px;
   color: var(--zone-color);
-  opacity: 0.6;
+  opacity: 0.45;
   pointer-events: none;
   filter:
     drop-shadow(0 0 4px var(--zone-color))
     drop-shadow(0 0 12px var(--zone-color));
+  flex-shrink: 0;
 }
 .neon-bg svg { width: 100%; height: 100%; }
 .neon-bg svg * {
@@ -51,84 +86,101 @@
 .neon-bg svg .fill { fill: var(--zone-color); }
 
 .zone-eyebrow {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--amber-dim);
-  letter-spacing: 0.3em;
-  margin-bottom: 8px;
-  position: relative;
-  z-index: 2;
+  letter-spacing: 0.28em;
+  margin-bottom: 4px;
 }
 .zone-title {
   font-family: 'Doto', 'Space Mono', monospace;
   font-weight: 700;
-  font-size: clamp(28px, 8vw, 42px);
+  font-size: clamp(24px, 7vw, 36px);
   letter-spacing: 0.04em;
   color: var(--zone-color);
   line-height: 1;
   font-variation-settings: 'ROND' 1;
-  text-shadow: 0 0 4px var(--zone-color), 0 0 12px var(--zone-color), 0 0 24px var(--zone-color);
-  position: relative;
-  z-index: 2;
-}
-.zone-subtitle {
-  margin-top: 6px;
-  font-family: 'Space Mono', monospace;
-  font-weight: 700;
-  font-size: clamp(24px, 7vw, 34px);
-  letter-spacing: 0.04em;
-  color: var(--amber);
-  line-height: 1;
-  font-style: italic;
-  text-shadow: 0 0 4px var(--amber-glow);
-  position: relative;
-  z-index: 2;
+  text-shadow: 0 0 4px var(--zone-color), 0 0 12px var(--zone-color);
 }
 .zone-tag {
-  margin-top: 12px;
-  font-size: 10px;
-  color: var(--amber-dim);
-  letter-spacing: 0.15em;
-  position: relative;
-  z-index: 2;
-  max-width: 60%;
-}
-
-.swipe-hint {
-  position: absolute;
-  bottom: 8px;
-  left: 0; right: 0;
-  text-align: center;
+  margin-top: 6px;
   font-size: 9px;
   color: var(--amber-dim);
-  letter-spacing: 0.3em;
-  animation: hint-fade 5s ease-out forwards;
-  pointer-events: none;
-  z-index: 3;
+  letter-spacing: 0.15em;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* ============================================================
+   META ROW (within a zone-page) — listing count + scroll hint
+   ============================================================ */
+
+.zone-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 14px;
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--amber-dim);
+  flex-shrink: 0;
+}
+.zone-meta-row .lbl { color: var(--amber-dim); }
+.zone-meta-row .val {
+  color: var(--amber-bright);
+  font-family: 'Doto', 'VT323', monospace;
+  font-size: 22px;
+  letter-spacing: 0.05em;
+  margin-left: 4px;
+}
+.zone-meta-hint {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+}
+
+/* The board section grows to fill remaining height of the panel. */
+.zone-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-bottom: 24px;
+}
+
+/* ============================================================
+   PAGE DOTS — wrap-aware indicator strip
+   ============================================================ */
 
 .page-dots {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
-  padding: 14px 14px;
+  gap: 4px 6px;
+  padding: 6px 10px;
   background: var(--bg-deep);
-  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
 }
 .page-dot {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
 }
 .page-dot::before {
   content: '';
   width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--amber-dim);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 .page-dot.active::before {
   background: var(--zone-accent);

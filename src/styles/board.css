@@ -156,22 +156,22 @@
 
 .actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 12px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-top: 10px;
 }
 .action-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 14px 8px;
-  min-height: 48px;
+  gap: 6px;
+  padding: 12px 6px;
+  min-height: 44px;
   background: var(--zone-accent-bg);
   border: 1px solid var(--zone-accent);
   color: var(--zone-accent);
   font-family: inherit;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-decoration: none;
@@ -196,6 +196,49 @@
   stroke-linejoin: round;
   flex-shrink: 0;
   transition: stroke 0.15s;
+}
+
+/* Primary action: BOOK SELF-GUIDED TOUR — full-width, prominent. */
+.action-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 16px 12px;
+  min-height: 56px;
+  background: var(--zone-accent);
+  border: 1px solid var(--zone-accent);
+  color: #050505;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  text-align: center;
+  text-shadow: none;
+  box-shadow: 0 0 18px var(--zone-accent-glow), inset 0 0 12px rgba(255, 255, 255, 0.1);
+  transition: all 0.15s;
+  cursor: pointer;
+  animation: tour-glow 2.4s ease-in-out infinite;
+}
+.action-btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 24px var(--zone-accent-glow);
+}
+.action-btn-primary svg {
+  width: 18px; height: 18px;
+  fill: none;
+  stroke: #050505;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+@keyframes tour-glow {
+  0%, 100% { box-shadow: 0 0 18px var(--zone-accent-glow), inset 0 0 12px rgba(255, 255, 255, 0.1); }
+  50% { box-shadow: 0 0 28px var(--zone-accent-glow), inset 0 0 12px rgba(255, 255, 255, 0.18); }
 }
 
 .accuracy-section {

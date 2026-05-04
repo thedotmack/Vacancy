@@ -161,16 +161,28 @@ body[data-zone="westernaddition"] {
 }
 
 html, body { background: var(--bg); color: var(--amber); }
+html { height: 100%; }
 body {
   font-family: 'Doto', 'Space Mono', ui-monospace, Monaco, monospace;
   font-size: 16px;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   text-shadow: 0 0 1px var(--amber-glow);
   transition: background 0.4s ease;
 }
+/* Children that aren't the swipeable pages container should not stretch. */
+body > .top-bar,
+body > .eyebrow-band,
+body > .map-toggle,
+body > .city-map-container,
+body > .page-dots,
+body > .footer { flex-shrink: 0; }
 
 body::before {
   content: '';
