@@ -1,0 +1,852 @@
+/* ============================================================
+   BUILDING DETAIL OVERLAY
+   Slides in from the right over the home surface. Full screen on
+   mobile, capped width on tablet/desktop. Uses base.css tokens.
+   ============================================================ */
+
+#buildingDetailRoot {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+}
+
+#buildingDetailRoot[aria-hidden="false"] {
+  pointer-events: auto;
+}
+
+.detail-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  color: var(--white);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  transform: translateX(100%);
+  transition: transform 300ms ease-out;
+  padding-bottom: calc(24px + var(--safe-bottom));
+  font-family: 'Doto', 'Space Mono', ui-monospace, Monaco, monospace;
+  /* Subtle dot grid like the rest of the app */
+  background-image: radial-gradient(circle at center, rgba(46, 182, 255, 0.10) 0.6px, transparent 0.7px);
+  background-size: 6px 6px;
+}
+
+#buildingDetailRoot.is-open .detail-overlay {
+  transform: translateX(0);
+}
+
+/* ============================================================
+   APP BAR — DOT MATRIX header strip with back / share / heart
+   ============================================================ */
+
+.detail-app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  padding-top: calc(10px + var(--safe-top));
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--cyan-faint);
+  backdrop-filter: blur(8px);
+}
+
+.detail-back {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--cyan-faint);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cyan-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  min-height: auto;
+}
+.detail-back svg { width: 18px; height: 18px; }
+.detail-back:active {
+  background: var(--cyan-soft);
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.detail-brand-mark {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan-bright);
+  letter-spacing: 0.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-shadow: 0 0 8px var(--cyan-glow);
+}
+.detail-brand-mark .brand-mark {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 3px);
+  grid-template-rows: repeat(3, 3px);
+  gap: 1px;
+}
+.detail-brand-mark .brand-mark i {
+  width: 3px; height: 3px;
+  background: var(--cyan-bright);
+  border-radius: 1px;
+  box-shadow: 0 0 4px var(--cyan-glow);
+}
+
+.detail-app-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-share,
+.detail-heart {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--cyan-faint);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cyan-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  min-height: auto;
+  transition: all 0.15s;
+}
+.detail-share svg,
+.detail-heart svg { width: 16px; height: 16px; }
+.detail-share svg { stroke: var(--cyan-bright); fill: none; }
+.detail-heart svg { fill: transparent; stroke: var(--cyan-bright); stroke-width: 1.5; }
+
+.detail-heart[data-favorited="true"] {
+  border-color: var(--magenta);
+  color: var(--magenta-bright);
+  background: var(--magenta-soft);
+  box-shadow: 0 0 10px var(--magenta-glow);
+}
+.detail-heart[data-favorited="true"] svg {
+  fill: var(--magenta-bright);
+  stroke: var(--magenta-bright);
+}
+
+/* ============================================================
+   HERO ART — zone-tinted dot-matrix building rendition
+   ============================================================ */
+
+.detail-hero {
+  position: relative;
+  height: 300px;
+  margin: 14px 14px 0;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(46, 182, 255, 0.06), transparent 60%),
+    var(--bg-card);
+  box-shadow:
+    0 0 24px -8px var(--cyan-glow),
+    inset 0 0 24px -8px var(--cyan-soft);
+}
+.detail-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, rgba(46, 182, 255, 0.22) 0.7px, transparent 0.8px);
+  background-size: 7px 7px;
+  opacity: 0.20;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-art svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-leased-badge {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 2;
+  font-family: 'Doto', 'VT323', monospace;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  color: var(--magenta-bright);
+  background:
+    radial-gradient(ellipse at center, var(--magenta-soft), transparent 70%),
+    rgba(0, 0, 0, 0.65);
+  border: 1px solid var(--magenta);
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
+  text-shadow: 0 0 6px var(--magenta-glow);
+  box-shadow: 0 0 14px -4px var(--magenta-glow);
+}
+
+/* ============================================================
+   TITLE / LOC / PERKS
+   ============================================================ */
+
+.detail-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 14px 4px;
+}
+.detail-bldg-glyph {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  color: var(--cyan-bright);
+}
+.detail-bldg-glyph svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 4px var(--cyan-glow));
+}
+.detail-title {
+  font-family: 'Doto', 'Space Mono', monospace;
+  font-weight: 900;
+  font-size: clamp(28px, 8vw, 36px);
+  letter-spacing: 0.06em;
+  color: var(--cyan-bright);
+  line-height: 1;
+  text-shadow: 0 0 4px var(--cyan-bright), 0 0 14px var(--cyan-glow);
+}
+
+.detail-loc {
+  margin: 6px 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--cyan-bright);
+  font-weight: 700;
+}
+.detail-loc svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--cyan);
+}
+.detail-loc span {
+  letter-spacing: 0.16em;
+}
+
+.perks-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 14px 0;
+}
+.perk-pill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--magenta-bright);
+  border: 1px solid var(--magenta);
+  border-radius: var(--radius-pill);
+  padding: 7px 12px;
+  background:
+    radial-gradient(ellipse at center, var(--magenta-soft), transparent 70%),
+    rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 4px var(--magenta-glow);
+}
+
+/* ============================================================
+   STATS GRID — 2x2; first cell is full-width "STARTING AT"
+   ============================================================ */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 16px 14px 0;
+}
+
+.stat-cell-large {
+  grid-column: 1 / -1;
+  border: 1px solid var(--cyan);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(46, 182, 255, 0.06), transparent 60%),
+    var(--bg-card);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 0 16px -8px var(--cyan-glow);
+}
+.stat-cell-large .stat-cell-label {
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  color: var(--cyan-dim);
+  font-weight: 700;
+}
+.stat-cell-large .stat-cell-value {
+  font-family: 'Doto', 'VT323', monospace;
+  font-size: clamp(28px, 8vw, 38px);
+  font-weight: 700;
+  color: var(--cyan-bright);
+  line-height: 1;
+  text-shadow: 0 0 8px var(--cyan-glow);
+  letter-spacing: 0.04em;
+}
+.stat-cell-large .stat-cell-unit {
+  font-size: 0.5em;
+  letter-spacing: 0.18em;
+  color: var(--cyan-dim);
+  margin-left: 6px;
+}
+.stat-cell-large .stat-cell-sub {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--white);
+  opacity: 0.78;
+  font-weight: 700;
+}
+
+.stat-cell {
+  border: 1px solid var(--cyan-faint);
+  border-radius: 10px;
+  background: rgba(46, 182, 255, 0.03);
+  padding: 12px 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  min-width: 0;
+}
+.stat-cell-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--cyan-bright);
+  display: inline-flex;
+}
+.stat-cell-icon svg { width: 100%; height: 100%; }
+.stat-cell-value-sm {
+  font-family: 'Doto', 'VT323', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--cyan-bright);
+  line-height: 1;
+  text-shadow: 0 0 6px var(--cyan-glow);
+  letter-spacing: 0.04em;
+}
+.stat-cell .stat-cell-label {
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  color: var(--cyan-dim);
+  font-weight: 700;
+}
+
+/* ============================================================
+   AMENITIES GRID — 3x2 tiles
+   ============================================================ */
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 14px 14px 0;
+}
+
+.amenity-tile {
+  border: 1px solid var(--cyan-faint);
+  border-radius: 10px;
+  background: rgba(46, 182, 255, 0.03);
+  padding: 14px 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  cursor: default;
+}
+.amenity-tile-icon {
+  width: 26px;
+  height: 26px;
+  color: var(--cyan-bright);
+  display: inline-flex;
+}
+.amenity-tile-icon svg { width: 100%; height: 100%; }
+.amenity-tile-label {
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: var(--cyan-dim);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.amenity-tile-empty {
+  border-color: transparent;
+  background: transparent;
+}
+.amenity-tile-more {
+  cursor: pointer;
+  border-color: var(--cyan);
+  background: rgba(46, 182, 255, 0.05);
+  color: var(--cyan-bright);
+  font-family: inherit;
+}
+.amenity-tile-more .amenity-tile-label { color: var(--cyan-bright); }
+.amenity-tile-more:active {
+  background: var(--cyan-soft);
+  box-shadow: 0 0 12px -4px var(--cyan-glow);
+}
+
+/* ============================================================
+   TOUR CARDS — IN-PERSON / VIRTUAL
+   ============================================================ */
+
+.tour-section {
+  margin: 22px 14px 0;
+}
+.tour-section-title {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: var(--cyan-dim);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.tour-card {
+  display: grid;
+  grid-template-columns: 36px 1fr 16px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  background: rgba(46, 182, 255, 0.04);
+  border: 1px solid var(--cyan-faint);
+  border-radius: 12px;
+  color: var(--cyan-bright);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tour-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--cyan-faint);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan-bright);
+}
+.tour-card-icon svg { width: 18px; height: 18px; }
+.tour-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tour-card-text strong {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  color: var(--cyan-bright);
+  font-weight: 700;
+  text-shadow: 0 0 4px var(--cyan-glow);
+}
+.tour-card-text span {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  opacity: 0.7;
+  font-weight: 400;
+}
+.tour-card-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--cyan-bright);
+}
+.tour-card-chevron svg { width: 100%; height: 100%; }
+
+.tour-in-person {
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px -6px var(--cyan-glow);
+}
+.tour-in-person .tour-card-icon {
+  border-color: var(--cyan);
+  background: var(--cyan-soft);
+  box-shadow: 0 0 8px -2px var(--cyan-glow);
+}
+
+.tour-card:active {
+  background: var(--cyan-soft);
+  border-color: var(--cyan);
+  box-shadow: 0 0 18px -4px var(--cyan-glow);
+}
+
+/* ============================================================
+   NEXT AVAILABLE ROW + SCHEDULE TOUR CTA
+   ============================================================ */
+
+.next-avail-row {
+  margin: 18px 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.next-avail-label {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: var(--cyan-dim);
+  font-weight: 700;
+}
+.next-avail-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.next-avail-chips .chip {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--cyan-bright);
+  border: 1px solid var(--cyan-faint);
+  border-radius: var(--radius-chip);
+  padding: 6px 10px;
+  background: rgba(46, 182, 255, 0.04);
+  font-weight: 700;
+  text-shadow: 0 0 4px var(--cyan-glow);
+}
+
+.schedule-tour-cta {
+  display: block;
+  width: calc(100% - 28px);
+  margin: 14px 14px 0;
+  padding: 16px 14px;
+  min-height: 56px;
+  background: var(--cyan);
+  border: 1px solid var(--cyan-bright);
+  border-radius: var(--radius-pill);
+  color: #000;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  text-align: center;
+  cursor: pointer;
+  box-shadow:
+    0 0 22px var(--cyan-glow),
+    inset 0 0 16px rgba(255, 255, 255, 0.18);
+  animation: tour-glow 2.6s ease-in-out infinite;
+}
+.schedule-tour-cta:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 30px var(--cyan-glow);
+}
+
+/* ============================================================
+   NEIGHBORHOOD — mini-map + transit list
+   ============================================================ */
+
+.neighborhood {
+  margin: 24px 14px 0;
+  border: 1px solid var(--cyan-faint);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, rgba(46, 182, 255, 0.04), transparent 60%),
+    var(--bg-card);
+  padding: 14px;
+}
+.neighborhood-title {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: var(--cyan-dim);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.detail-mini-map {
+  position: relative;
+  height: 180px;
+  border: 1px solid var(--cyan-faint);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+}
+.detail-mini-map svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.zone-label-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 10px 0 12px;
+}
+.zone-label-name {
+  font-family: 'Doto', 'Space Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cyan-bright);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 4px var(--cyan-glow);
+}
+.zone-label-sub {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--cyan-dim);
+  font-weight: 700;
+}
+
+.transit-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border-top: 1px dashed var(--cyan-faint);
+}
+.transit-item {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--cyan-faint);
+}
+.transit-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+}
+.transit-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.transit-name {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--white);
+  font-weight: 700;
+}
+.transit-mins {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--cyan-dim);
+  font-weight: 700;
+}
+
+/* ============================================================
+   3-COL INFO ROW — move-in / floor plans / office hours
+   ============================================================ */
+
+.detail-info-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin: 18px 14px 0;
+}
+.info-cell {
+  border: 1px solid var(--cyan-faint);
+  border-radius: 10px;
+  background: rgba(46, 182, 255, 0.03);
+  padding: 12px 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+.info-cell-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--cyan-bright);
+  margin-bottom: 4px;
+  display: inline-flex;
+}
+.info-cell-icon svg { width: 100%; height: 100%; }
+.info-cell strong {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--cyan-bright);
+  font-weight: 700;
+  text-shadow: 0 0 4px var(--cyan-glow);
+}
+.info-cell span {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--white);
+  opacity: 0.78;
+  font-weight: 700;
+}
+.info-cell .info-cell-phone {
+  margin-top: 4px;
+  color: var(--cyan-bright);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 4px var(--cyan-glow);
+}
+
+/* ============================================================
+   FEEDBACK SECTION — accuracy votes + comments
+   The classes below are reused from board.css; this section just
+   gives the lifted markup a wrapper with breathing room.
+   ============================================================ */
+
+.detail-feedback {
+  margin: 22px 14px 0;
+  padding: 16px 14px;
+  border: 1px solid var(--cyan-faint);
+  border-radius: var(--radius-card);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Override the default `margin-top` on the lifted accuracy section
+   (it normally sits below other content inside .row, so the dashed
+   top border looks great there but extra here). */
+.detail-feedback .accuracy-section {
+  margin-top: 0;
+  padding: 0;
+  border-top: none;
+}
+.detail-feedback .comment-section {
+  margin-top: 14px;
+}
+
+/* ============================================================
+   APPLY ROW — sticky-ish footer with SAVE + APPLY NOW
+   ============================================================ */
+
+.detail-apply-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: stretch;
+  margin: 22px 14px 0;
+  padding-bottom: 8px;
+}
+
+.detail-save {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 14px;
+  background: transparent;
+  border: 1px solid var(--cyan-faint);
+  border-radius: var(--radius-pill);
+  color: var(--cyan-bright);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  text-shadow: 0 0 4px var(--cyan-glow);
+  transition: all 0.15s;
+}
+.detail-save svg {
+  width: 16px;
+  height: 16px;
+  fill: transparent;
+  stroke: var(--cyan-bright);
+  stroke-width: 1.6;
+}
+.detail-save[data-favorited="true"] {
+  border-color: var(--magenta);
+  color: var(--magenta-bright);
+  background: var(--magenta-soft);
+  text-shadow: 0 0 4px var(--magenta-glow);
+}
+.detail-save[data-favorited="true"] svg {
+  fill: var(--magenta-bright);
+  stroke: var(--magenta-bright);
+}
+
+.detail-apply-now {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 14px;
+  background: var(--magenta);
+  border: 1px solid var(--magenta-bright);
+  border-radius: var(--radius-pill);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  text-decoration: none;
+  text-align: center;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 0 26px var(--magenta-glow),
+    inset 0 0 18px rgba(255, 255, 255, 0.18);
+  animation: apply-glow 2.4s ease-in-out infinite;
+}
+.detail-apply-now:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 36px var(--magenta-glow);
+}
+
+@keyframes apply-glow {
+  0%, 100% { box-shadow: 0 0 24px var(--magenta-glow), inset 0 0 18px rgba(255, 255, 255, 0.18); }
+  50%      { box-shadow: 0 0 38px var(--magenta-glow), inset 0 0 18px rgba(255, 255, 255, 0.26); }
+}
+
+/* ============================================================
+   TOAST — flashes "LINK COPIED" when the share fallback fires
+   ============================================================ */
+
+.detail-toast {
+  position: fixed;
+  bottom: calc(20px + var(--safe-bottom));
+  left: 50%;
+  transform: translate(-50%, 12px);
+  background: var(--bg-deep);
+  color: var(--cyan-bright);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  padding: 10px 16px;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-pill);
+  text-shadow: 0 0 4px var(--cyan-glow);
+  box-shadow: 0 0 16px -4px var(--cyan-glow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+  z-index: 70;
+}
+.detail-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ============================================================
+   TABLET / DESKTOP — cap the panel like a "phone-in-frame"
+   ============================================================ */
+
+@media (min-width: 720px) {
+  .detail-overlay {
+    max-width: 480px;
+    left: auto;
+    right: 0;
+    border-left: 1px solid var(--cyan-faint);
+    box-shadow: -16px 0 40px rgba(0, 0, 0, 0.6);
+  }
+}
