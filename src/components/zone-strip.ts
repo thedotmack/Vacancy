@@ -1,8 +1,41 @@
 import type { ZoneId } from '../types';
 import { ZONES, ZONE_METADATA } from '../data/zones';
+import { BUILDINGS } from '../data/buildings';
+import { lowestPrice } from '../utils/formatters';
 import { savePreferences } from '../utils/preferences';
 import { getActiveZone, setActiveZone as setStateZone, getSortMode, getExpanded } from '../state';
 import { updateCityMap } from './city-map';
+import { HEART_ICON, SEARCH_ICON } from '../utils/icons';
+
+interface ZoneStats {
+  buildings: number;
+  units: number;
+  fromPrice: number | null;
+  topConcession: string | null;
+}
+
+function statsForZone(zoneId: ZoneId): ZoneStats {
+  const list = BUILDINGS.filter(b => b.zone === zoneId);
+  const buildings = list.length;
+  const units = list.reduce((acc, b) => acc + b.avail, 0);
+  const prices = list.map(lowestPrice).filter(p => p > 0);
+  const fromPrice = prices.length ? Math.min(...prices) : null;
+  // Pick the building with the highest concessionRank — the "best perk" in the zone.
+  let topConcession: string | null = null;
+  let bestRank = 0;
+  for (const b of list) {
+    if (b.concession && b.concessionRank > bestRank) {
+      bestRank = b.concessionRank;
+      topConcession = b.concession;
+    }
+  }
+  return { buildings, units, fromPrice, topConcession };
+}
+
+function compactPrice(price: number): string {
+  if (price >= 1000) return '$' + Math.round(price / 100) / 10 + 'K';
+  return '$' + price;
+}
 
 /**
  * Build all 23 zone panels (hero + board container) into #zonePages,
@@ -11,29 +44,43 @@ import { updateCityMap } from './city-map';
 export function buildZonePages(): void {
   const container = document.getElementById('zonePages');
   if (container) {
-    container.innerHTML = ZONE_METADATA.map(meta => `
-      <section class="zone-page" data-zone-id="${meta.id}" style="--zone-color:${meta.color}">
+    container.innerHTML = ZONE_METADATA.map(meta => {
+      const stats = statsForZone(meta.id);
+      const fromCell = stats.fromPrice
+        ? `<div class="stat-val">${compactPrice(stats.fromPrice)}</div><div class="stat-lbl">FROM</div>`
+        : `<div class="stat-val">—</div><div class="stat-lbl">FROM</div>`;
+      const perkCell = stats.topConcession
+        ? `<div class="zone-stat zone-stat-perk"><div class="stat-val">${stats.topConcession}</div><div class="stat-lbl">TOP DEAL</div></div>`
+        : `<div class="zone-stat"><div class="stat-val">${stats.units}</div><div class="stat-lbl">UNITS</div></div>`;
+
+      return `
+      <section class="zone-page" data-zone-id="${meta.id}" style="--zone-tint:${meta.color}">
         <header class="zone-hero">
-          <div class="zone-hero-text">
-            <div class="zone-eyebrow">${meta.eyebrow}</div>
-            <div class="zone-title">${meta.title}</div>
-            <div class="zone-tag">${meta.tag}</div>
+          <div class="zone-hero-row">
+            <div class="zone-hero-text">
+              <div class="zone-eyebrow">${meta.eyebrow}</div>
+              <div class="zone-title">${meta.title}</div>
+              <div class="zone-tag">${meta.tag}</div>
+            </div>
+            <div class="zone-hero-actions">
+              <button class="icon-btn" type="button" aria-label="Search">${SEARCH_ICON}</button>
+              <button class="icon-btn" type="button" aria-label="Save zone">${HEART_ICON}</button>
+            </div>
           </div>
-          <div class="neon-bg" aria-hidden="true">${meta.svgMarkup}</div>
+          <div class="zone-stats">
+            <div class="zone-stat"><div class="stat-val">${stats.buildings}</div><div class="stat-lbl">BUILDINGS</div></div>
+            <div class="zone-stat">${fromCell}</div>
+            ${perkCell}
+          </div>
         </header>
         <div class="zone-meta-row">
           <div><span class="lbl">LISTINGS</span> <span class="val" id="count-${meta.id}">--</span></div>
-          <div class="zone-meta-hint">&#9650; SCROLL FOR LIST &middot; SWIPE FOR ZONES &#9654;</div>
-        </div>
-        <div class="col-header">
-          <span>GATE</span>
-          <span>BUILDING</span>
-          <span>FROM</span>
-          <span>STATUS</span>
+          <div class="zone-meta-hint">&#9650; SCROLL &middot; SWIPE FOR ZONES &#9654;</div>
         </div>
         <div class="zone-board" id="board-${meta.id}"></div>
       </section>
-    `).join('');
+      `;
+    }).join('');
   }
 
   const dots = document.getElementById('pageDots');
@@ -72,9 +119,6 @@ export function setActiveZone(zoneId: ZoneId, scrollToIt: boolean): void {
 
 /**
  * Wire up the whole-page horizontal swipe.
- * - Listens for `scrollend` (or polyfills with a debounced scroll-stop timer)
- * - Snaps the active zone based on which panel is most centered when scroll settles
- * - Avoids re-rendering boards mid-swipe (boards are pre-rendered per panel)
  */
 export function setupZoneSwipe(): void {
   const pages = document.getElementById('zonePages');

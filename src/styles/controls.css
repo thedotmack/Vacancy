@@ -1,54 +1,62 @@
 .footer {
   padding: 12px 14px calc(12px + var(--safe-bottom));
   background: var(--bg-deep);
-  border-top: 2px double var(--amber-dim);
+  border-top: 1px solid var(--cyan-faint);
+  position: relative;
+  z-index: 5;
 }
 .controls {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 10px;
 }
 .controls button {
-  padding: 12px 10px;
+  padding: 12px 12px;
   min-height: 44px;
-  font-size: 11px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
 }
-.legend { font-size: 10px; line-height: 1.6; }
+
 button {
   background: transparent;
-  border: 1px solid var(--amber-dim);
-  color: var(--amber);
-  padding: 16px 10px;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-pill);
+  color: var(--cyan-bright);
+  padding: 14px 12px;
   min-height: 48px;
   font-family: inherit;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   cursor: pointer;
   transition: all 0.15s;
+  text-shadow: 0 0 4px var(--cyan-glow);
 }
 button:active {
-  background: var(--bg-row);
-  border-color: var(--zone-accent);
-  color: var(--zone-accent);
-  box-shadow: 0 0 12px var(--zone-accent-glow);
+  background: var(--cyan);
+  color: #000;
+  border-color: var(--cyan-bright);
+  text-shadow: none;
+  box-shadow: 0 0 16px var(--cyan-glow);
 }
+
 .legend {
-  font-size: 11px;
-  color: var(--amber-dim);
+  font-size: 10px;
+  color: var(--cyan-dim);
   line-height: 1.9;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   text-align: center;
+  font-weight: 700;
 }
 .legend .key {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin: 0 6px;
+  gap: 5px;
+  margin: 0 8px;
 }
 .legend .key-dot {
-  width: 6px; height: 6px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   display: inline-block;
 }

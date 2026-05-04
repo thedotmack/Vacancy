@@ -1,6 +1,5 @@
 /* ============================================================
    ZONE PAGES — whole-page horizontal snap container
-   Each panel = 100vw, snaps into view, scrolls vertically inside.
    ============================================================ */
 
 .zone-pages {
@@ -11,13 +10,13 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  /* take the rest of the viewport height after fixed-height bars */
   flex: 1 1 auto;
   min-height: 0;
   background: var(--bg);
-  /* Allow horizontal pan-x at the page level; vertical pan happens inside .zone-page */
   touch-action: pan-x pan-y;
   overscroll-behavior-x: contain;
+  position: relative;
+  z-index: 3;
 }
 .zone-pages::-webkit-scrollbar { display: none; }
 
@@ -33,108 +32,189 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   position: relative;
+  padding-bottom: 24px;
 }
 .zone-page::-webkit-scrollbar { display: none; }
 
 /* ============================================================
-   ZONE HERO — compact header inside each panel
+   ZONE HERO — the "MISSION BAY" stat card from the mockup
+   Big neighborhood title, subtitle, and 3-up stat row
    ============================================================ */
 
 .zone-hero {
   position: relative;
-  padding: 10px 14px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-bottom: 2px solid var(--zone-color, var(--amber-dim));
-  box-shadow: 0 4px 18px -10px var(--zone-color, var(--amber-glow));
-  flex-shrink: 0;
+  margin: 14px 14px 8px;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, rgba(46, 182, 255, 0.04), transparent 60%),
+    var(--bg-card);
+  box-shadow:
+    0 0 24px -8px var(--cyan-glow),
+    inset 0 0 18px -8px var(--cyan-soft);
   overflow: hidden;
-  min-height: 64px;
+  flex-shrink: 0;
+}
+.zone-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, rgba(46, 182, 255, 0.22) 0.7px, transparent 0.8px);
+  background-size: 7px 7px;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.zone-hero-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
 }
 .zone-hero-text {
-  position: relative;
-  z-index: 2;
   flex: 1 1 auto;
   min-width: 0;
 }
-
-.neon-bg {
-  position: absolute;
-  right: -6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 70px;
-  height: 70px;
-  color: var(--zone-color);
-  opacity: 0.4;
-  pointer-events: none;
-  filter:
-    drop-shadow(0 0 3px var(--zone-color))
-    drop-shadow(0 0 8px var(--zone-color));
+.zone-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cyan-bright);
   flex-shrink: 0;
 }
-.neon-bg svg { width: 100%; height: 100%; }
-.neon-bg svg * {
-  stroke: var(--zone-color);
+.zone-hero-actions .icon-btn {
+  width: 32px; height: 32px;
+  background: transparent;
+  border: 1px solid var(--cyan-faint);
+  border-radius: 50%;
+  color: var(--cyan-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  min-height: auto;
+  transition: all 0.15s;
+}
+.zone-hero-actions .icon-btn svg {
+  width: 14px; height: 14px;
   fill: none;
-  stroke-width: 1.5;
+  stroke: var(--cyan-bright);
+  stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.neon-bg svg .fill { fill: var(--zone-color); }
+.zone-hero-actions .icon-btn:active {
+  background: var(--cyan-soft);
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
 
 .zone-eyebrow {
-  font-size: 8px;
-  color: var(--amber-dim);
-  letter-spacing: 0.28em;
-  margin-bottom: 2px;
+  font-size: 9px;
+  color: var(--cyan-dim);
+  letter-spacing: 0.32em;
+  margin-bottom: 6px;
+  font-weight: 700;
 }
 .zone-title {
   font-family: 'Doto', 'Space Mono', monospace;
-  font-weight: 700;
-  font-size: clamp(20px, 6vw, 30px);
-  letter-spacing: 0.04em;
-  color: var(--zone-color);
+  font-weight: 900;
+  font-size: clamp(26px, 7.5vw, 36px);
+  letter-spacing: 0.06em;
+  color: var(--cyan-bright);
   line-height: 1;
   font-variation-settings: 'ROND' 1;
-  text-shadow: 0 0 4px var(--zone-color), 0 0 12px var(--zone-color);
+  text-shadow:
+    0 0 4px var(--cyan-bright),
+    0 0 14px var(--cyan-glow),
+    0 0 24px var(--zone-tint-glow);
 }
 .zone-tag {
-  margin-top: 3px;
-  font-size: 9px;
-  color: var(--amber-dim);
-  letter-spacing: 0.15em;
-  max-width: 75%;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--white);
+  opacity: 0.7;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+}
+
+/* === 3-up stat strip + perk badge === */
+.zone-stats {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+  position: relative;
+  z-index: 1;
+}
+.zone-stat {
+  text-align: center;
+  padding: 10px 6px;
+  border: 1px solid var(--cyan-faint);
+  border-radius: 10px;
+  background: rgba(46, 182, 255, 0.03);
+  min-width: 0;
+}
+.zone-stat .stat-val {
+  font-family: 'Doto', 'VT323', monospace;
+  font-size: clamp(18px, 5vw, 24px);
+  font-weight: 700;
+  color: var(--cyan-bright);
+  line-height: 1;
+  text-shadow: 0 0 6px var(--cyan-glow);
+  letter-spacing: 0.04em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.zone-stat .stat-lbl {
+  font-size: 8px;
+  color: var(--cyan-dim);
+  letter-spacing: 0.2em;
+  margin-top: 5px;
+  font-weight: 700;
+}
+.zone-stat-perk {
+  border-color: var(--magenta);
+  background: var(--magenta-soft);
+  box-shadow: 0 0 12px -4px var(--magenta-glow), inset 0 0 10px -4px var(--magenta-soft);
+}
+.zone-stat-perk .stat-val {
+  color: var(--magenta-bright);
+  font-size: clamp(13px, 3.4vw, 15px);
+  text-shadow: 0 0 6px var(--magenta-glow);
+  letter-spacing: 0.1em;
+  white-space: normal;
+  line-height: 1.15;
+}
+.zone-stat-perk .stat-lbl { color: var(--magenta); }
 
 /* ============================================================
-   META ROW (within a zone-page) — listing count + scroll hint
+   META ROW — listings count + scroll hint
    ============================================================ */
 
 .zone-meta-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 14px;
-  background: var(--bg-deep);
-  border-bottom: 1px solid var(--border);
+  padding: 6px 18px 4px;
   font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--amber-dim);
+  letter-spacing: 0.16em;
+  color: var(--cyan-dim);
   flex-shrink: 0;
 }
-.zone-meta-row .lbl { color: var(--amber-dim); }
+.zone-meta-row .lbl { color: var(--cyan-dim); }
 .zone-meta-row .val {
-  color: var(--amber-bright);
+  color: var(--cyan-bright);
   font-family: 'Doto', 'VT323', monospace;
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: 0.05em;
   margin-left: 4px;
+  text-shadow: 0 0 4px var(--cyan-glow);
 }
 .zone-meta-hint {
   font-size: 8px;
@@ -142,15 +222,18 @@
   opacity: 0.7;
 }
 
-/* The board section grows to fill remaining height of the panel. */
+/* The board section grows to fill the rest of the panel. */
 .zone-board {
   flex: 1 1 auto;
   min-height: 0;
-  padding-bottom: 24px;
+  padding: 4px 14px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* ============================================================
-   PAGE DOTS — wrap-aware indicator strip
+   PAGE DOTS — neon active pill, dim dots
    ============================================================ */
 
 .page-dots {
@@ -158,10 +241,12 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 3px 4px;
-  padding: 4px 8px;
+  padding: 6px 8px 5px;
   background: var(--bg-deep);
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--cyan-faint);
   flex-shrink: 0;
+  position: relative;
+  z-index: 5;
 }
 .page-dot {
   width: 18px;
@@ -174,17 +259,18 @@
   border: none;
   padding: 0;
   flex-shrink: 0;
+  min-height: auto;
 }
 .page-dot::before {
   content: '';
   width: 5px; height: 5px;
   border-radius: 50%;
-  background: var(--amber-dim);
+  background: var(--cyan-faint);
   transition: all 0.25s ease;
 }
 .page-dot.active::before {
-  background: var(--zone-accent);
-  box-shadow: 0 0 6px var(--zone-accent-glow);
-  width: 14px;
+  background: var(--cyan-bright);
+  box-shadow: 0 0 8px var(--cyan-glow);
+  width: 16px;
   border-radius: 3px;
 }

@@ -1,166 +1,81 @@
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 :root {
-  --amber: #FFB400;
-  --amber-bright: #FFD54F;
-  --amber-dim: #8A6500;
-  --amber-glow: rgba(255, 180, 0, 0.45);
-  --green: #4ADE80;
-  --red: #FF5252;
-  --bg: #0A0A0A;
-  --bg-row: #131313;
-  --bg-deep: #050505;
-  --border: #1F1A0A;
+  /* === DOT MATRIX brand palette — cyan neon on pure black === */
+  --bg: #000000;
+  --bg-deep: #000000;
+  --bg-row: #06121F;
+  --bg-card: #050B14;
 
-  --zone-accent: #FFB400;
-  --zone-accent-glow: rgba(255, 180, 0, 0.5);
-  --zone-accent-soft: rgba(255, 180, 0, 0.08);
-  --zone-accent-bg: rgba(255, 180, 0, 0.04);
+  --cyan: #2EB6FF;
+  --cyan-bright: #6FD4FF;
+  --cyan-dim: #2A6E96;
+  --cyan-faint: #14405C;
+  --cyan-glow: rgba(46, 182, 255, 0.55);
+  --cyan-soft: rgba(46, 182, 255, 0.10);
+  --cyan-bg: rgba(46, 182, 255, 0.05);
+
+  --magenta: #FF4D9F;
+  --magenta-bright: #FF7DB8;
+  --magenta-glow: rgba(255, 77, 159, 0.55);
+  --magenta-soft: rgba(255, 77, 159, 0.10);
+
+  --white: #F4FAFF;
+  --green: #4ADE80;
+  --amber: #FFD54F;
+  --red: #FF5252;
+
+  /* Backwards-compatible aliases — old code that still references --amber-* etc.
+     gets the new cyan palette automatically. */
+  --amber-bright: var(--white);
+  --amber-dim: var(--cyan-dim);
+  --amber-glow: var(--cyan-glow);
+  --border: var(--cyan-faint);
+
+  /* Default zone accent = brand cyan. Per-zone overrides only tint the hero
+     so the chrome stays consistent across the city. */
+  --zone-accent: var(--cyan);
+  --zone-accent-glow: var(--cyan-glow);
+  --zone-accent-soft: var(--cyan-soft);
+  --zone-accent-bg: var(--cyan-bg);
+
+  /* Per-zone hero tint — subtle ambient color identity. */
+  --zone-tint: var(--cyan);
+  --zone-tint-glow: var(--cyan-glow);
 
   --safe-top: env(safe-area-inset-top, 0);
   --safe-bottom: env(safe-area-inset-bottom, 0);
+
+  --radius-card: 14px;
+  --radius-pill: 999px;
+  --radius-chip: 8px;
 }
 
-body[data-zone="embarcadero"] {
-  --zone-accent: #5DD3F0;
-  --zone-accent-glow: rgba(93, 211, 240, 0.5);
-  --zone-accent-soft: rgba(93, 211, 240, 0.07);
-  --zone-accent-bg: rgba(93, 211, 240, 0.04);
-}
-body[data-zone="rincon"] {
-  --zone-accent: #FFD54F;
-  --zone-accent-glow: rgba(255, 213, 79, 0.5);
-  --zone-accent-soft: rgba(255, 213, 79, 0.08);
-  --zone-accent-bg: rgba(255, 213, 79, 0.04);
-}
-body[data-zone="southbeach"] {
-  --zone-accent: #4FE0C6;
-  --zone-accent-glow: rgba(79, 224, 198, 0.5);
-  --zone-accent-soft: rgba(79, 224, 198, 0.07);
-  --zone-accent-bg: rgba(79, 224, 198, 0.04);
-}
-body[data-zone="missionbay"] {
-  --zone-accent: #FF5DAA;
-  --zone-accent-glow: rgba(255, 93, 170, 0.5);
-  --zone-accent-soft: rgba(255, 93, 170, 0.07);
-  --zone-accent-bg: rgba(255, 93, 170, 0.04);
-}
-body[data-zone="soma"] {
-  --zone-accent: #E74C3C;
-  --zone-accent-glow: rgba(231, 76, 60, 0.5);
-  --zone-accent-soft: rgba(231, 76, 60, 0.07);
-  --zone-accent-bg: rgba(231, 76, 60, 0.04);
-}
-body[data-zone="mission"] {
-  --zone-accent: #F39C12;
-  --zone-accent-glow: rgba(243, 156, 18, 0.5);
-  --zone-accent-soft: rgba(243, 156, 18, 0.07);
-  --zone-accent-bg: rgba(243, 156, 18, 0.04);
-}
-body[data-zone="castro"] {
-  --zone-accent: #9B59B6;
-  --zone-accent-glow: rgba(155, 89, 182, 0.5);
-  --zone-accent-soft: rgba(155, 89, 182, 0.07);
-  --zone-accent-bg: rgba(155, 89, 182, 0.04);
-}
-body[data-zone="hayesvalley"] {
-  --zone-accent: #16A085;
-  --zone-accent-glow: rgba(22, 160, 133, 0.5);
-  --zone-accent-soft: rgba(22, 160, 133, 0.07);
-  --zone-accent-bg: rgba(22, 160, 133, 0.04);
-}
-body[data-zone="pacificheights"] {
-  --zone-accent: #27AE60;
-  --zone-accent-glow: rgba(39, 174, 96, 0.5);
-  --zone-accent-soft: rgba(39, 174, 96, 0.07);
-  --zone-accent-bg: rgba(39, 174, 96, 0.04);
-}
-body[data-zone="marina"] {
-  --zone-accent: #2ECC71;
-  --zone-accent-glow: rgba(46, 204, 113, 0.5);
-  --zone-accent-soft: rgba(46, 204, 113, 0.07);
-  --zone-accent-bg: rgba(46, 204, 113, 0.04);
-}
-body[data-zone="dogpatch"] {
-  --zone-accent: #E8956D;
-  --zone-accent-glow: rgba(232, 149, 109, 0.5);
-  --zone-accent-soft: rgba(232, 149, 109, 0.07);
-  --zone-accent-bg: rgba(232, 149, 109, 0.04);
-}
-body[data-zone="potrerohill"] {
-  --zone-accent: #EA8670;
-  --zone-accent-glow: rgba(234, 134, 112, 0.5);
-  --zone-accent-soft: rgba(234, 134, 112, 0.07);
-  --zone-accent-bg: rgba(234, 134, 112, 0.04);
-}
-body[data-zone="nobhill"] {
-  --zone-accent: #C9A959;
-  --zone-accent-glow: rgba(201, 169, 89, 0.5);
-  --zone-accent-soft: rgba(201, 169, 89, 0.07);
-  --zone-accent-bg: rgba(201, 169, 89, 0.04);
-}
-body[data-zone="northbeach"] {
-  --zone-accent: #D4A574;
-  --zone-accent-glow: rgba(212, 165, 116, 0.5);
-  --zone-accent-soft: rgba(212, 165, 116, 0.07);
-  --zone-accent-bg: rgba(212, 165, 116, 0.04);
-}
-body[data-zone="richmond"] {
-  --zone-accent: #E67E22;
-  --zone-accent-glow: rgba(230, 126, 34, 0.5);
-  --zone-accent-soft: rgba(230, 126, 34, 0.07);
-  --zone-accent-bg: rgba(230, 126, 34, 0.04);
-}
-body[data-zone="sunset"] {
-  --zone-accent: #F8B195;
-  --zone-accent-glow: rgba(248, 177, 149, 0.5);
-  --zone-accent-soft: rgba(248, 177, 149, 0.07);
-  --zone-accent-bg: rgba(248, 177, 149, 0.04);
-}
-body[data-zone="bernalheights"] {
-  --zone-accent: #FF6B6B;
-  --zone-accent-glow: rgba(255, 107, 107, 0.5);
-  --zone-accent-soft: rgba(255, 107, 107, 0.07);
-  --zone-accent-bg: rgba(255, 107, 107, 0.04);
-}
-body[data-zone="glenpark"] {
-  --zone-accent: #A569BD;
-  --zone-accent-glow: rgba(165, 105, 189, 0.5);
-  --zone-accent-soft: rgba(165, 105, 189, 0.07);
-  --zone-accent-bg: rgba(165, 105, 189, 0.04);
-}
-body[data-zone="noevalley"] {
-  --zone-accent: #AF7AC5;
-  --zone-accent-glow: rgba(175, 122, 197, 0.5);
-  --zone-accent-soft: rgba(175, 122, 197, 0.07);
-  --zone-accent-bg: rgba(175, 122, 197, 0.04);
-}
-body[data-zone="twinpeaks"] {
-  --zone-accent: #3498DB;
-  --zone-accent-glow: rgba(52, 152, 219, 0.5);
-  --zone-accent-soft: rgba(52, 152, 219, 0.07);
-  --zone-accent-bg: rgba(52, 152, 219, 0.04);
-}
-body[data-zone="financialdistrict"] {
-  --zone-accent: #4A90E2;
-  --zone-accent-glow: rgba(74, 144, 226, 0.5);
-  --zone-accent-soft: rgba(74, 144, 226, 0.07);
-  --zone-accent-bg: rgba(74, 144, 226, 0.04);
-}
-body[data-zone="tenderloin"] {
-  --zone-accent: #C9C9C9;
-  --zone-accent-glow: rgba(201, 201, 201, 0.5);
-  --zone-accent-soft: rgba(201, 201, 201, 0.08);
-  --zone-accent-bg: rgba(201, 201, 201, 0.04);
-}
-body[data-zone="westernaddition"] {
-  --zone-accent: #1ABC9C;
-  --zone-accent-glow: rgba(26, 188, 156, 0.5);
-  --zone-accent-soft: rgba(26, 188, 156, 0.07);
-  --zone-accent-bg: rgba(26, 188, 156, 0.04);
-}
+body[data-zone="embarcadero"]      { --zone-tint: #5DD3F0; --zone-tint-glow: rgba(93, 211, 240, 0.5); }
+body[data-zone="rincon"]           { --zone-tint: #FFD54F; --zone-tint-glow: rgba(255, 213, 79, 0.5); }
+body[data-zone="southbeach"]       { --zone-tint: #4FE0C6; --zone-tint-glow: rgba(79, 224, 198, 0.5); }
+body[data-zone="missionbay"]       { --zone-tint: #FF5DAA; --zone-tint-glow: rgba(255, 93, 170, 0.5); }
+body[data-zone="soma"]             { --zone-tint: #E74C3C; --zone-tint-glow: rgba(231, 76, 60, 0.5); }
+body[data-zone="mission"]          { --zone-tint: #F39C12; --zone-tint-glow: rgba(243, 156, 18, 0.5); }
+body[data-zone="castro"]           { --zone-tint: #9B59B6; --zone-tint-glow: rgba(155, 89, 182, 0.5); }
+body[data-zone="hayesvalley"]      { --zone-tint: #16A085; --zone-tint-glow: rgba(22, 160, 133, 0.5); }
+body[data-zone="pacificheights"]   { --zone-tint: #27AE60; --zone-tint-glow: rgba(39, 174, 96, 0.5); }
+body[data-zone="marina"]           { --zone-tint: #2ECC71; --zone-tint-glow: rgba(46, 204, 113, 0.5); }
+body[data-zone="dogpatch"]         { --zone-tint: #E8956D; --zone-tint-glow: rgba(232, 149, 109, 0.5); }
+body[data-zone="potrerohill"]      { --zone-tint: #EA8670; --zone-tint-glow: rgba(234, 134, 112, 0.5); }
+body[data-zone="nobhill"]          { --zone-tint: #C9A959; --zone-tint-glow: rgba(201, 169, 89, 0.5); }
+body[data-zone="northbeach"]       { --zone-tint: #D4A574; --zone-tint-glow: rgba(212, 165, 116, 0.5); }
+body[data-zone="richmond"]         { --zone-tint: #E67E22; --zone-tint-glow: rgba(230, 126, 34, 0.5); }
+body[data-zone="sunset"]           { --zone-tint: #F8B195; --zone-tint-glow: rgba(248, 177, 149, 0.5); }
+body[data-zone="bernalheights"]    { --zone-tint: #FF6B6B; --zone-tint-glow: rgba(255, 107, 107, 0.5); }
+body[data-zone="glenpark"]         { --zone-tint: #A569BD; --zone-tint-glow: rgba(165, 105, 189, 0.5); }
+body[data-zone="noevalley"]        { --zone-tint: #AF7AC5; --zone-tint-glow: rgba(175, 122, 197, 0.5); }
+body[data-zone="twinpeaks"]        { --zone-tint: #3498DB; --zone-tint-glow: rgba(52, 152, 219, 0.5); }
+body[data-zone="financialdistrict"]{ --zone-tint: #4A90E2; --zone-tint-glow: rgba(74, 144, 226, 0.5); }
+body[data-zone="tenderloin"]       { --zone-tint: #C9C9C9; --zone-tint-glow: rgba(201, 201, 201, 0.5); }
+body[data-zone="westernaddition"]  { --zone-tint: #1ABC9C; --zone-tint-glow: rgba(26, 188, 156, 0.5); }
 
-html, body { background: var(--bg); color: var(--amber); }
+html, body { background: var(--bg); color: var(--white); }
 html { height: 100%; }
 body {
   font-family: 'Doto', 'Space Mono', ui-monospace, Monaco, monospace;
@@ -173,10 +88,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  text-shadow: 0 0 1px var(--amber-glow);
   transition: background 0.4s ease;
 }
-/* Children that aren't the swipeable pages container should not stretch. */
 body > .top-bar,
 body > .eyebrow-band,
 body > .map-toggle,
@@ -184,91 +97,116 @@ body > .city-map-container,
 body > .page-dots,
 body > .footer { flex-shrink: 0; }
 
+/* === Atmospheric layers — dot grid + zone tint vignette === */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse at top, var(--zone-accent-soft) 0%, transparent 60%),
-    radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 2px,
-      rgba(0,0,0,0.18) 2px,
-      rgba(0,0,0,0.18) 3px
-    );
+    radial-gradient(ellipse at top, rgba(46, 182, 255, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom, var(--zone-tint-glow) 0%, transparent 70%);
+  background-blend-mode: screen;
+  opacity: 0.45;
   pointer-events: none;
-  z-index: 999;
-  mix-blend-mode: multiply;
-  transition: background 0.5s ease;
+  z-index: 1;
+  transition: background 0.6s ease;
 }
 body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: rgba(255,180,0,0.012);
+  background-image: radial-gradient(circle at center, rgba(46, 182, 255, 0.18) 0.6px, transparent 0.7px);
+  background-size: 6px 6px;
+  background-position: 0 0;
+  opacity: 0.16;
+  mix-blend-mode: screen;
   pointer-events: none;
-  z-index: 998;
-  animation: flicker 8s infinite;
+  z-index: 2;
 }
 
+/* === Top scrolling ticker (telemetry strip) === */
 .top-bar {
   background: var(--bg-deep);
-  border-bottom: 1px solid var(--amber-dim);
-  padding: 4px 12px;
-  padding-top: calc(4px + var(--safe-top));
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--amber-dim);
+  border-bottom: 1px solid var(--cyan-faint);
+  padding: 5px 12px;
+  padding-top: calc(5px + var(--safe-top));
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: var(--cyan-dim);
   overflow: hidden;
   white-space: nowrap;
+  position: relative;
+  z-index: 5;
 }
 .top-bar .scroll {
   display: inline-block;
   animation: scroll 40s linear infinite;
+  text-shadow: 0 0 4px var(--cyan-glow);
 }
 
+/* === Eyebrow brand band — "DOT MATRIX" header strip === */
 .eyebrow-band {
   background: var(--bg-deep);
-  padding: 6px 14px 5px;
-  border-bottom: 1px solid var(--border);
+  padding: 10px 14px 9px;
+  padding-top: 10px;
+  border-bottom: 1px solid var(--cyan-faint);
+  position: relative;
+  z-index: 5;
 }
 .eyebrow {
-  font-size: 9px;
-  color: var(--amber-dim);
-  letter-spacing: 0.22em;
+  font-size: 11px;
+  color: var(--cyan-bright);
+  letter-spacing: 0.32em;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 0 0 8px var(--cyan-glow), 0 0 1px var(--cyan-bright);
 }
 .eyebrow .dot {
   width: 6px; height: 6px;
   background: var(--green);
   border-radius: 50%;
-  box-shadow: 0 0 6px var(--green);
+  box-shadow: 0 0 8px var(--green);
   animation: pulse 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.eyebrow .brand-mark {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 3px);
+  grid-template-rows: repeat(3, 3px);
+  gap: 1px;
+  flex-shrink: 0;
+}
+.eyebrow .brand-mark i {
+  width: 3px; height: 3px;
+  background: var(--cyan-bright);
+  border-radius: 1px;
+  box-shadow: 0 0 4px var(--cyan-glow);
 }
 
+/* === Meta row inside zone (legacy hooks) === */
 .meta-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   padding: 12px 14px;
   background: var(--bg-deep);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--cyan-faint);
   font-size: 11px;
   letter-spacing: 0.1em;
 }
-.meta-row .lbl { color: var(--amber-dim); }
+.meta-row .lbl { color: var(--cyan-dim); }
 .meta-row .val {
-  color: var(--amber-bright);
+  color: var(--white);
   font-family: 'Doto', 'VT323', monospace;
   font-size: 22px;
   letter-spacing: 0.05em;
+  text-shadow: 0 0 6px var(--cyan-glow);
 }
 .stale-warn {
   display: none;
@@ -280,35 +218,54 @@ body::after {
 }
 .stale-warn.show { display: block; }
 
+/* === Column header for board (kept as compact taxonomy strip) === */
 .col-header {
-  background: var(--bg-deep);
-  color: var(--amber-dim);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  padding: 6px 14px;
-  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--cyan-dim);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  padding: 8px 18px 6px;
   display: grid;
   grid-template-columns: 44px 1fr 78px 70px;
   gap: 8px;
   align-items: center;
   text-transform: uppercase;
+  border-bottom: 1px dashed var(--cyan-faint);
 }
 .col-header > :nth-child(3),
 .col-header > :nth-child(4) { text-align: right; }
 
+/* === Empty state === */
 .empty {
+  margin: 24px 14px;
   padding: 40px 20px;
   text-align: center;
-  color: var(--amber-dim);
+  color: var(--cyan-dim);
   font-size: 11px;
   letter-spacing: 0.18em;
   line-height: 1.6;
+  border: 1px solid var(--cyan-faint);
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(circle at center, rgba(46, 182, 255, 0.08), transparent 70%),
+    var(--bg-card);
+  position: relative;
+}
+.empty::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, rgba(46, 182, 255, 0.18) 0.6px, transparent 0.7px);
+  background-size: 6px 6px;
+  opacity: 0.4;
+  border-radius: inherit;
+  pointer-events: none;
 }
 .empty .big {
   font-family: 'Doto', 'VT323', monospace;
   font-size: 36px;
-  color: var(--zone-accent);
-  text-shadow: 0 0 8px var(--zone-accent-glow);
+  color: var(--cyan-bright);
+  text-shadow: 0 0 10px var(--cyan-glow);
   margin-bottom: 8px;
   letter-spacing: 0.08em;
 }

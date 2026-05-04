@@ -46,7 +46,7 @@ export function renderCityMap(): void {
   let pathsMarkup = '';
 
   for (const [zoneId, pathData] of Object.entries(NEIGHBORHOOD_PATHS)) {
-    const color = ZONE_COLORS[zoneId] ?? '#FFB400';
+    const color = ZONE_COLORS[zoneId] ?? '#2EB6FF';
     const title = zoneTitleForId(zoneId);
 
     patternsMarkup += `<pattern id="map-dots-${zoneId}" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -60,12 +60,12 @@ export function renderCityMap(): void {
   let pinsMarkup = '';
   for (const b of BUILDINGS) {
     const { x, y } = latLngToSvg(b.lat, b.lng);
-    const color = ZONE_COLORS[b.zone] ?? '#FFB400';
+    const color = ZONE_COLORS[b.zone] ?? '#2EB6FF';
     const label = priceLabel(lowestPrice(b));
     pinsMarkup += `<g class="map-pin" data-gate="${b.gate}" data-zone="${b.zone}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" aria-label="${b.name} ${label}">
       <circle class="map-pin-halo" r="11" fill="${color}" opacity="0.22"/>
-      <circle class="map-pin-dot" r="4" fill="#0A0A0A" stroke="${color}" stroke-width="1.8"/>
-      <text class="map-pin-label" x="7" y="3" font-size="13" font-weight="700" fill="${color}" stroke="#0A0A0A" stroke-width="3" paint-order="stroke">${label}</text>
+      <circle class="map-pin-dot" r="4" fill="#000000" stroke="${color}" stroke-width="1.8"/>
+      <text class="map-pin-label" x="7" y="3" font-size="13" font-weight="700" fill="${color}" stroke="#000000" stroke-width="3" paint-order="stroke">${label}</text>
     </g>\n`;
   }
 
@@ -73,7 +73,7 @@ export function renderCityMap(): void {
   <defs>
     ${patternsMarkup}
   </defs>
-  <path d="${SF_CITY_OUTLINE}" class="city-outline" fill="none" stroke="rgba(255,180,0,0.15)" stroke-width="1"/>
+  <path d="${SF_CITY_OUTLINE}" class="city-outline" fill="none" stroke="rgba(46,182,255,0.22)" stroke-width="1"/>
   ${pathsMarkup}
   <g class="map-pins">${pinsMarkup}</g>
 </svg>`;
