@@ -1,6 +1,9 @@
 import { BUILDINGS } from '../data/buildings';
 import type { Building } from '../types';
 import { getMark, setMark, getAllMarks, onMarksChanged, type Mark } from '../utils/marks';
+import { ZONE_METADATA } from '../data/zones';
+import { buildingArtSVG } from './building-art';
+import { formatPrice, lowestPrice } from '../utils/formatters';
 
 declare const L: any;
 
@@ -30,6 +33,14 @@ function pinIcon(mark: Mark | null): any {
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function zoneTint(b: Building): string {
+  return ZONE_METADATA.find(zone => zone.id === b.zone)?.color ?? '#2EB6FF';
+}
+
+function zoneLabel(b: Building): string {
+  return ZONE_METADATA.find(zone => zone.id === b.zone)?.title ?? b.zone.toUpperCase();
 }
 
 function priceLine(b: Building): string {
@@ -95,6 +106,7 @@ function applyFilter(): void {
     if (visible && !map.hasLayer(marker)) marker.addTo(map);
     else if (!visible && map.hasLayer(marker)) map.removeLayer(marker);
   }
+  renderBuildingRows();
 }
 
 function refreshMarkerIcons(): void {
@@ -116,6 +128,119 @@ function renderCounts(): void {
   }
   const unmarked = BUILDINGS.length - yes - no;
   el.innerHTML = `<span class="count-yes">${yes} yes</span><span class="count-no">${no} no</span><span>${unmarked} left</span>`;
+}
+
+function filteredBuildings(): Building[] {
+  return BUILDINGS.filter(b => passesFilter(b.gate, activeFilter));
+}
+
+function renderPhoto(b: Building): string {
+  if (b.photoUrl) {
+    return `<img src="${escapeHtml(b.photoUrl)}" alt="${escapeHtml(b.name)}" loading="lazy">`;
+  }
+  return buildingArtSVG(b, zoneTint(b), { variant: 'card' });
+}
+
+function bedsLine(b: Building): string {
+  const parts: string[] = [];
+  if (b.studio != null) parts.push(`Studio ${formatPrice(b.studio)}`);
+  if (b.br1 != null) parts.push(`1BR ${formatPrice(b.br1)}`);
+  if (b.br2 != null) parts.push(`2BR ${formatPrice(b.br2)}`);
+  return parts.join(' · ') || 'Prices not listed';
+}
+
+function markLabel(mark: Mark | null): string {
+  if (mark === 'yes') return 'Yes';
+  if (mark === 'no') return 'No';
+  return 'Unmarked';
+}
+
+function renderBuildingRow(b: Building): string {
+  const mark = getMark(b.gate);
+  const detailHref = `#/building/${encodeURIComponent(b.gate)}`;
+  const mapsHref = `https://www.google.com/maps/dir/?api=1&destination=${b.lat},${b.lng}`;
+  const minPrice = lowestPrice(b);
+  const tint = zoneTint(b);
+
+  return `
+    <article class="building-row" data-gate="${escapeHtml(b.gate)}" style="--row-tint:${tint}">
+      <button class="row-map-target" type="button" data-row-map="${escapeHtml(b.gate)}" aria-label="Show ${escapeHtml(b.name)} on map">
+        <figure class="row-photo">${renderPhoto(b)}</figure>
+      </button>
+      <div class="row-main">
+        <div class="row-kicker">
+          <span>${escapeHtml(b.gate)}</span>
+          <span>${escapeHtml(zoneLabel(b))}</span>
+          <span class="row-mark row-mark-${mark ?? 'none'}">${markLabel(mark)}</span>
+        </div>
+        <h3>${escapeHtml(b.name)}</h3>
+        <p class="row-address">${escapeHtml(b.address)}</p>
+        <p class="row-tagline">${escapeHtml(b.tagline || b.notes.split('.')[0])}</p>
+        <div class="row-facts">
+          <span>${minPrice ? `From ${formatPrice(minPrice)}` : 'Price TBD'}</span>
+          <span>${b.avail} available</span>
+          ${b.concession ? `<span>${escapeHtml(b.concession)}</span>` : ''}
+        </div>
+        <p class="row-beds">${escapeHtml(bedsLine(b))}</p>
+      </div>
+      <div class="row-actions">
+        <div class="row-mark-actions" aria-label="Mark ${escapeHtml(b.name)}">
+          <button class="row-mark-btn yes" type="button" data-row-mark="yes" data-gate="${escapeHtml(b.gate)}" aria-pressed="${mark === 'yes'}">Yes</button>
+          <button class="row-mark-btn no" type="button" data-row-mark="no" data-gate="${escapeHtml(b.gate)}" aria-pressed="${mark === 'no'}">No</button>
+        </div>
+        <a class="row-detail-link" href="${detailHref}">Full details</a>
+        <a class="row-secondary-link" href="${mapsHref}" target="_blank" rel="noopener">Directions</a>
+      </div>
+    </article>
+  `;
+}
+
+function renderBuildingRows(): void {
+  const rowsEl = document.getElementById('buildingRows');
+  if (!rowsEl) return;
+
+  const buildings = filteredBuildings();
+  rowsEl.innerHTML = buildings.length
+    ? buildings.map(renderBuildingRow).join('')
+    : '<div class="empty-list">No buildings match this filter.</div>';
+
+  const summary = document.getElementById('listSummary');
+  if (summary) {
+    const filterLabel = FILTERS.find(f => f.id === activeFilter)?.label ?? 'All';
+    summary.textContent = `${buildings.length} of ${BUILDINGS.length} · ${filterLabel}`;
+  }
+
+  rowsEl.querySelectorAll<HTMLButtonElement>('[data-row-map]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const gate = btn.dataset.rowMap;
+      if (!gate) return;
+      const building = BUILDINGS.find(b => b.gate === gate);
+      const marker = markerByGate.get(gate);
+      if (!building || !marker) return;
+      map.flyTo([building.lat, building.lng], Math.max(map.getZoom(), 15), { duration: 0.45 });
+      marker.openPopup();
+      setActiveRow(gate);
+    });
+  });
+
+  rowsEl.querySelectorAll<HTMLButtonElement>('[data-row-mark]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const gate = btn.dataset.gate;
+      const mark = btn.dataset.rowMark as Mark | undefined;
+      if (!gate || !mark) return;
+      setMark(gate, getMark(gate) === mark ? null : mark);
+    });
+  });
+}
+
+function setActiveRow(gate: string): void {
+  document.querySelectorAll<HTMLElement>('.building-row.is-active').forEach(row => {
+    row.classList.remove('is-active');
+  });
+  const row = document.querySelector<HTMLElement>(`.building-row[data-gate="${gate}"]`);
+  if (!row) return;
+  row.classList.add('is-active');
+  row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
 function renderFilters(): void {
@@ -160,6 +285,7 @@ export function mountMap(): void {
     marker.on('popupopen', (e: any) => {
       const node = e.popup.getElement() as HTMLElement | null;
       if (node) bindPopupActions(b.gate, node);
+      setActiveRow(b.gate);
     });
     marker.addTo(map);
     markerByGate.set(b.gate, marker);
@@ -167,10 +293,14 @@ export function mountMap(): void {
 
   renderFilters();
   renderCounts();
+  renderBuildingRows();
 
   onMarksChanged(() => {
     refreshMarkerIcons();
     renderCounts();
     if (activeFilter !== 'all') applyFilter();
+    else renderBuildingRows();
   });
+
+  window.setTimeout(() => map.invalidateSize(), 0);
 }
