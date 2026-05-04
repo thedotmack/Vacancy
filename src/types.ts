@@ -2,6 +2,17 @@ export type ZoneId = 'embarcadero' | 'rincon' | 'southbeach' | 'missionbay' | 's
 export type SortMode = 'gate' | 'price' | 'inventory' | 'concession';
 export type StatusLevel = 'boarding' | 'limited' | 'departing';
 
+export type AmenityKey =
+  | 'rooftop' | 'gym' | 'coworking' | 'pet' | 'bike' | 'pool'
+  | 'parking' | 'doorman' | 'laundry' | 'concierge' | 'spa'
+  | 'sauna' | 'theater' | 'dogwash' | 'lounge' | 'deck';
+
+export interface TransitStop {
+  name: string;
+  mode: 'walk' | 'muni' | 'bart' | 'caltrain' | 'tthird';
+  mins: number;
+}
+
 export interface Building {
   gate: string;
   zone: ZoneId;
@@ -20,6 +31,14 @@ export interface Building {
   notes: string;
   sourceUrl: string;
   tourUrl?: string;
+  amenities?: AmenityKey[];
+  floorPlans?: number;
+  leasedPct?: number;
+  nextAvailable?: string[];
+  transit?: TransitStop[];
+  perks?: string[];
+  tagline?: string;
+  photoUrl?: string;
 }
 
 export interface BuildingComment {

@@ -12,6 +12,7 @@ import { render, toggleRow, cycleSort } from './components/board';
 import { renderCityMap } from './components/city-map';
 import { initState, getActiveZone } from './state';
 import { submitVote as apiSubmitVote, submitComment as apiSubmitComment, fetchBuildingFeedback } from './utils/feedback-api';
+import { initRouter, onRouteChange, getCurrentRoute } from './router';
 
 declare global {
   interface Window {
@@ -137,6 +138,12 @@ function init(): void {
   const prefs = loadPreferences();
   initState(prefs);
   loadOrSeedCache();
+
+  initRouter();
+  onRouteChange((route) => {
+    console.debug('[router]', route);
+  });
+  console.debug('[router]', getCurrentRoute());
 
   // Build the 23 zone panels (DOM) before wiring up swipe & rendering boards.
   buildZonePages();

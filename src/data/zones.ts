@@ -23,6 +23,7 @@ export interface ZoneMetadata {
   eyebrow: string;
   title: string;
   tag: string;
+  subtitle: string;
   color: string;
   svgMarkup: string;
 }
@@ -33,6 +34,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 01 · NORTH WATERFRONT',
     title: 'EMBARCADERO',
     tag: 'FERRY BUILDING · CLOCK TOWER · PIER 1',
+    subtitle: 'Bayfront living next to the Ferry Building',
     color: '#5DD3F0',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="40" y="36" width="20" height="56"/>
@@ -53,6 +55,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 02 · EAST CUT',
     title: 'RINCON HILL',
     tag: 'LUXURY TOWER CLUSTER · 5 LISTINGS',
+    subtitle: 'Luxury high-rise cluster south of Market',
     color: '#FFD54F',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="22" y="22" width="22" height="68"/>
@@ -77,6 +80,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 03 · BAY BRIDGE',
     title: 'SOUTH BEACH',
     tag: 'MARINA · ORACLE PARK ADJACENT',
+    subtitle: 'Marina-adjacent living near Oracle Park',
     color: '#4FE0C6',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <circle cx="50" cy="20" r="6"/>
@@ -94,6 +98,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 04 · CHASE CENTER',
     title: 'MISSION BAY',
     tag: 'UCSF · BIOTECH · WATERFRONT TRAIL',
+    subtitle: 'Waterfront living near UCSF + Chase Center',
     color: '#FF5DAA',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <circle cx="50" cy="40" r="22"/>
@@ -114,6 +119,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 05 · SOUTH OF MARKET',
     title: 'SOMA',
     tag: 'TECH HUB · NIGHTLIFE · LOFTS',
+    subtitle: 'Mid-Market towers and converted lofts',
     color: '#E74C3C',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="20" y="30" width="60" height="40" rx="3"/>
@@ -131,6 +137,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 06 · INNER MISSION',
     title: 'MISSION',
     tag: 'TAQUERIAS · MURALS · DOLORES PARK',
+    subtitle: 'Latin culture, taquerias, BART access',
     color: '#F39C12',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <circle cx="50" cy="28" r="18"/>
@@ -148,6 +155,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 07 · EUREKA VALLEY',
     title: 'CASTRO',
     tag: 'CASTRO THEATRE · RAINBOW · HISTORIC',
+    subtitle: 'Iconic Castro Theatre at the doorstep',
     color: '#9B59B6',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <path d="M 30 20 L 50 8 L 70 20 L 70 50 L 30 50 Z"/>
@@ -166,6 +174,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 08 · CIVIC CENTER WEST',
     title: 'HAYES VALLEY',
     tag: 'BOUTIQUES · OCTAVIA BLVD · PATRICIA\'S GREEN',
+    subtitle: 'Boutique blocks near the Symphony',
     color: '#16A085',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <line x1="50" y1="92" x2="50" y2="40"/>
@@ -183,6 +192,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 09 · UPPER FILLMORE',
     title: 'PACIFIC HEIGHTS',
     tag: 'MANSION ROW · FILLMORE · BAY VIEWS',
+    subtitle: 'Quiet tree-lined streets above the bay',
     color: '#27AE60',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="20" y="50" width="60" height="40"/>
@@ -201,6 +211,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 10 · WATERFRONT NORTH',
     title: 'MARINA',
     tag: 'WATERFRONT · PALACE OF FINE ARTS · CHESTNUT ST',
+    subtitle: 'Walks to Crissy Field and Chestnut St',
     color: '#2ECC71',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <path d="M 40 20 L 40 70"/>
@@ -215,6 +226,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 11 · CENTRAL WATERFRONT',
     title: 'DOGPATCH',
     tag: 'CRANE COVE · BREWERIES · PIER 70',
+    subtitle: 'Industrial-chic waterfront on the T-Third line',
     color: '#E8956D',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <line x1="60" y1="10" x2="60" y2="90"/>
@@ -233,6 +245,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 12 · SOUTH SLOPE',
     title: 'POTRERO HILL',
     tag: 'HILLTOP VIEWS · 18TH ST CORRIDOR · SUNNY',
+    subtitle: 'Sunny south-slope city skyline views',
     color: '#EA8670',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <path d="M 10 80 Q 50 30, 90 80"/>
@@ -254,6 +267,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 13 · SUMMIT',
     title: 'NOB HILL',
     tag: 'CABLE CARS · GRACE CATHEDRAL · TOP OF THE MARK',
+    subtitle: 'Grand hill above the cable car line',
     color: '#C9A959',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="20" y="50" width="60" height="30" rx="2"/>
@@ -275,6 +289,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 14 · TELEGRAPH HILL',
     title: 'NORTH BEACH',
     tag: 'CITY LIGHTS · COIT TOWER · ITALIAN QUARTER',
+    subtitle: 'Italian cafes and Telegraph Hill stairs',
     color: '#D4A574',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="40" y="16" width="20" height="60"/>
@@ -295,6 +310,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 15 · OUTER RICHMOND',
     title: 'RICHMOND',
     tag: 'GOLDEN GATE PARK · CLEMENT ST · DIM SUM',
+    subtitle: 'Foggy avenues steps from Golden Gate Park',
     color: '#E67E22',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <path d="M 10 70 L 30 30 L 50 70"/>
@@ -312,6 +328,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 16 · OUTER SUNSET',
     title: 'SUNSET',
     tag: 'OCEAN BEACH · IRVING ST · GOLDEN GATE HEIGHTS',
+    subtitle: 'Surf, fog belt, and N-Judah convenience',
     color: '#F8B195',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <path d="M 10 60 Q 25 48, 40 60 Q 55 72, 70 60 Q 85 48, 100 60"/>
@@ -331,6 +348,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 17 · SOUTH CENTRAL',
     title: 'BERNAL HEIGHTS',
     tag: 'HILLTOP PARK · CORTLAND AVE · DOG-FRIENDLY',
+    subtitle: 'Hilltop village with skyline views',
     color: '#FF6B6B',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <path d="M 10 80 Q 50 20, 90 80"/>
@@ -348,6 +366,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 18 · GLEN CANYON',
     title: 'GLEN PARK',
     tag: 'GLEN CANYON · VILLAGE FEEL · BART ACCESS',
+    subtitle: 'BART-anchored urban village',
     color: '#A569BD',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <line x1="30" y1="90" x2="30" y2="40"/>
@@ -367,6 +386,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 19 · 24TH STREET',
     title: 'NOE VALLEY',
     tag: '24TH STREET · STROLLER VALLEY · SUNNY SIDE',
+    subtitle: 'Sunny stroller-friendly main street',
     color: '#AF7AC5',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="12" y="50" width="22" height="30"/>
@@ -389,6 +409,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 20 · GEOGRAPHIC CENTER',
     title: 'TWIN PEAKS',
     tag: 'PANORAMIC VIEWS · SUTRO TOWER · MIDTOWN',
+    subtitle: 'Dramatic ridge with panoramic views',
     color: '#3498DB',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <path d="M 5 80 L 30 30 L 50 55 L 70 25 L 95 80"/>
@@ -405,6 +426,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 21 · DOWNTOWN CORE',
     title: 'FINANCIAL DISTRICT',
     tag: 'TRANSAMERICA · SALESFORCE TOWER · FiDi',
+    subtitle: 'Salesforce Tower-adjacent urban core',
     color: '#4A90E2',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="14" y="40" width="16" height="50"/>
@@ -430,6 +452,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 22 · CIVIC CENTER',
     title: 'TENDERLOIN',
     tag: 'CIVIC CENTER · THEATRE DISTRICT · AFFORDABLE',
+    subtitle: 'Theatre District with deepest concessions',
     color: '#C9C9C9',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="20" y="30" width="60" height="8" rx="2"/>
@@ -452,6 +475,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 23 · JAPANTOWN',
     title: 'WESTERN ADDITION',
     tag: 'JAPANTOWN · FILLMORE JAZZ · ALAMO SQUARE',
+    subtitle: 'Jazz heritage and Japantown adjacency',
     color: '#1ABC9C',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <line x1="50" y1="90" x2="50" y2="50"/>
