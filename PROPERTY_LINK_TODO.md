@@ -66,4 +66,4 @@ Goal: every building row/detail link goes to an actual property, property manage
 - [x] Aggregator-domain scan passes
 - [x] TypeScript/Vite build passes
 - [x] Browser layout smoke test passes
-- [ ] Commit and push to `main`
+- [x] Commit and push to `main`
