@@ -66,6 +66,14 @@ export function buildingArtSVG(b: Building, zoneTint: string, opts?: ArtOptions)
 
   const sil = silhouetteFor(b);
 
+  // The silhouette body is always rendered in brand cyan so non-cyan zones
+  // (e.g. missionbay's pink, mission's red) still produce a recognizable
+  // building. The zoneTint is reserved for ambient backdrop accents — the
+  // background dot pattern, ground line, and rooftop antenna — so each zone
+  // keeps its visual identity without flattening the silhouette into a
+  // monochrome block.
+  const BUILDING_BODY = '#2EB6FF';
+
   // Background dot grid
   const dotSize = isHero ? 4 : 3;
   const dotSpacing = isHero ? 9 : 7;
@@ -98,8 +106,8 @@ export function buildingArtSVG(b: Building, zoneTint: string, opts?: ArtOptions)
     const cols = Math.max(2, Math.floor(drawW / stride));
     const rows = Math.max(4, Math.floor(buildingH / stride));
 
-    // Outer fill — a translucent block in zoneTint
-    buildings += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${drawW.toFixed(1)}" height="${buildingH.toFixed(1)}" rx="2" fill="${zoneTint}" opacity="0.10"/>`;
+    // Outer fill — a translucent block in BUILDING_BODY (cyan)
+    buildings += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${drawW.toFixed(1)}" height="${buildingH.toFixed(1)}" rx="2" fill="${BUILDING_BODY}" opacity="0.10"/>`;
 
     // Pixel grid for the silhouette body — render full filled blocks of dots.
     let pixels = '';
@@ -111,25 +119,28 @@ export function buildingArtSVG(b: Building, zoneTint: string, opts?: ArtOptions)
         // the silhouette reads as a solid block of pixels with subtle texture.
         const isEdge = r === 0 || r === rows - 1 || c === 0 || c === cols - 1;
         const op = isEdge ? 0.78 : 0.55;
-        pixels += `<rect x="${px.toFixed(1)}" y="${py.toFixed(1)}" width="${cellSize}" height="${cellSize}" fill="${zoneTint}" opacity="${op}"/>`;
+        pixels += `<rect x="${px.toFixed(1)}" y="${py.toFixed(1)}" width="${cellSize}" height="${cellSize}" fill="${BUILDING_BODY}" opacity="${op}"/>`;
       }
     }
     buildings += pixels;
 
     // Window grid — small bright squares laid out evenly across the facade.
-    const winRows = sil.windowRows[i];
-    const winCols = sil.windowCols[i];
+    // Hero builds get denser windows so the silhouette reads as a lit
+    // skyscraper rather than a sparse shape.
+    const winRows = sil.windowRows[i] + (isHero ? 2 : 0);
+    const winCols = sil.windowCols[i] + (isHero ? 1 : 0);
     const winAreaW = drawW - 16;
     const winAreaH = buildingH - 22;
     const winCellW = winAreaW / winCols;
     const winCellH = winAreaH / winRows;
-    const windowSize = Math.max(2, Math.min(winCellW, winCellH) * 0.35);
+    const windowSize = Math.max(2, Math.min(winCellW, winCellH) * 0.40);
+    const litThreshold = isHero ? 78 : 70;
     let windows = '';
     for (let r = 0; r < winRows; r++) {
       for (let c = 0; c < winCols; c++) {
         // Per-window seed determines whether the window is lit + brightness.
         const seedVal = (hashGate(b.gate + 'w' + i + ':' + r + ':' + c) >>> 0) % 100;
-        const lit = seedVal < 70;
+        const lit = seedVal < litThreshold;
         if (!lit) continue;
         // Center the window inside its cell.
         const wx = x + 8 + c * winCellW + (winCellW - windowSize) / 2;

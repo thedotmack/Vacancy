@@ -260,14 +260,28 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.16em;
-  color: var(--magenta-bright);
-  border: 1px solid var(--magenta);
+  color: var(--cyan-bright);
+  border: 1px solid var(--cyan);
   border-radius: var(--radius-pill);
   padding: 7px 12px;
+  background:
+    radial-gradient(ellipse at center, var(--cyan-soft), transparent 70%),
+    rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 4px var(--cyan-glow);
+  box-shadow: 0 0 8px -4px var(--cyan-glow), inset 0 0 0 1px rgba(255, 77, 159, 0.18);
+}
+/* The third perk in the mockup is a wider promo-style pill with a magenta
+   border. We don't yet have per-perk type metadata, so apply that treatment
+   to the third perk by sibling order — matches the visual hierarchy without
+   touching the data model. */
+.perk-pill:nth-child(n+3) {
+  color: var(--magenta-bright);
+  border-color: var(--magenta);
   background:
     radial-gradient(ellipse at center, var(--magenta-soft), transparent 70%),
     rgba(0, 0, 0, 0.3);
   text-shadow: 0 0 4px var(--magenta-glow);
+  box-shadow: 0 0 8px -4px var(--magenta-glow);
 }
 
 /* ============================================================
