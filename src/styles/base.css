@@ -148,10 +148,10 @@ body[data-zone="financialdistrict"] {
   --zone-accent-bg: rgba(74, 144, 226, 0.04);
 }
 body[data-zone="tenderloin"] {
-  --zone-accent: #696969;
-  --zone-accent-glow: rgba(105, 105, 105, 0.5);
-  --zone-accent-soft: rgba(105, 105, 105, 0.07);
-  --zone-accent-bg: rgba(105, 105, 105, 0.04);
+  --zone-accent: #C9C9C9;
+  --zone-accent-glow: rgba(201, 201, 201, 0.5);
+  --zone-accent-soft: rgba(201, 201, 201, 0.08);
+  --zone-accent-bg: rgba(201, 201, 201, 0.04);
 }
 body[data-zone="westernaddition"] {
   --zone-accent: #1ABC9C;
@@ -216,9 +216,9 @@ body::after {
 .top-bar {
   background: var(--bg-deep);
   border-bottom: 1px solid var(--amber-dim);
-  padding: 6px 12px;
-  padding-top: calc(6px + var(--safe-top));
-  font-size: 11px;
+  padding: 4px 12px;
+  padding-top: calc(4px + var(--safe-top));
+  font-size: 10px;
   letter-spacing: 0.2em;
   color: var(--amber-dim);
   overflow: hidden;
@@ -231,16 +231,19 @@ body::after {
 
 .eyebrow-band {
   background: var(--bg-deep);
-  padding: 10px 14px 8px;
+  padding: 6px 14px 5px;
   border-bottom: 1px solid var(--border);
 }
 .eyebrow {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--amber-dim);
-  letter-spacing: 0.25em;
+  letter-spacing: 0.22em;
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .eyebrow .dot {
   width: 6px; height: 6px;
@@ -280,13 +283,12 @@ body::after {
 .col-header {
   background: var(--bg-deep);
   color: var(--amber-dim);
-  font-size: 12px;
+  font-size: 10px;
   letter-spacing: 0.18em;
-  padding: 10px 14px;
+  padding: 6px 14px;
   border-bottom: 1px solid var(--border);
-  border-top: 1px solid var(--border);
   display: grid;
-  grid-template-columns: 44px 1fr 78px 78px;
+  grid-template-columns: 44px 1fr 78px 70px;
   gap: 8px;
   align-items: center;
   text-transform: uppercase;

@@ -63,9 +63,9 @@ export function renderCityMap(): void {
     const color = ZONE_COLORS[b.zone] ?? '#FFB400';
     const label = priceLabel(lowestPrice(b));
     pinsMarkup += `<g class="map-pin" data-gate="${b.gate}" data-zone="${b.zone}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" aria-label="${b.name} ${label}">
-      <circle class="map-pin-halo" r="9" fill="${color}" opacity="0.18"/>
-      <circle class="map-pin-dot" r="3.5" fill="#0A0A0A" stroke="${color}" stroke-width="1.5"/>
-      <text class="map-pin-label" x="6" y="2" font-size="9" fill="${color}" stroke="#0A0A0A" stroke-width="2.5" paint-order="stroke">${label}</text>
+      <circle class="map-pin-halo" r="11" fill="${color}" opacity="0.22"/>
+      <circle class="map-pin-dot" r="4" fill="#0A0A0A" stroke="${color}" stroke-width="1.8"/>
+      <text class="map-pin-label" x="7" y="3" font-size="13" font-weight="700" fill="${color}" stroke="#0A0A0A" stroke-width="3" paint-order="stroke">${label}</text>
     </g>\n`;
   }
 

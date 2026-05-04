@@ -87,6 +87,6 @@ export const ZONE_COLORS: Record<string, string> = {
   noevalley: '#AF7AC5',
   twinpeaks: '#3498DB',
   financialdistrict: '#4A90E2',
-  tenderloin: '#696969',
+  tenderloin: '#C9C9C9',
   westernaddition: '#1ABC9C',
 };

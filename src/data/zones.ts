@@ -430,7 +430,7 @@ export const ZONE_METADATA: ZoneMetadata[] = [
     eyebrow: 'ZONE 22 · CIVIC CENTER',
     title: 'TENDERLOIN',
     tag: 'CIVIC CENTER · THEATRE DISTRICT · AFFORDABLE',
-    color: '#696969',
+    color: '#C9C9C9',
     svgMarkup: `<svg viewBox="0 0 100 100">
       <rect x="20" y="30" width="60" height="8" rx="2"/>
       <rect x="24" y="22" width="52" height="8"/>

@@ -42,16 +42,16 @@
 
 .zone-hero {
   position: relative;
-  padding: 18px 14px 14px;
+  padding: 10px 14px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   border-bottom: 2px solid var(--zone-color, var(--amber-dim));
-  box-shadow: 0 4px 24px -10px var(--zone-color, var(--amber-glow));
+  box-shadow: 0 4px 18px -10px var(--zone-color, var(--amber-glow));
   flex-shrink: 0;
   overflow: hidden;
-  min-height: 100px;
+  min-height: 64px;
 }
 .zone-hero-text {
   position: relative;
@@ -62,17 +62,17 @@
 
 .neon-bg {
   position: absolute;
-  right: -10px;
+  right: -6px;
   top: 50%;
   transform: translateY(-50%);
-  width: 110px;
-  height: 110px;
+  width: 70px;
+  height: 70px;
   color: var(--zone-color);
-  opacity: 0.45;
+  opacity: 0.4;
   pointer-events: none;
   filter:
-    drop-shadow(0 0 4px var(--zone-color))
-    drop-shadow(0 0 12px var(--zone-color));
+    drop-shadow(0 0 3px var(--zone-color))
+    drop-shadow(0 0 8px var(--zone-color));
   flex-shrink: 0;
 }
 .neon-bg svg { width: 100%; height: 100%; }
@@ -86,15 +86,15 @@
 .neon-bg svg .fill { fill: var(--zone-color); }
 
 .zone-eyebrow {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--amber-dim);
   letter-spacing: 0.28em;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .zone-title {
   font-family: 'Doto', 'Space Mono', monospace;
   font-weight: 700;
-  font-size: clamp(24px, 7vw, 36px);
+  font-size: clamp(20px, 6vw, 30px);
   letter-spacing: 0.04em;
   color: var(--zone-color);
   line-height: 1;
@@ -102,11 +102,11 @@
   text-shadow: 0 0 4px var(--zone-color), 0 0 12px var(--zone-color);
 }
 .zone-tag {
-  margin-top: 6px;
+  margin-top: 3px;
   font-size: 9px;
   color: var(--amber-dim);
   letter-spacing: 0.15em;
-  max-width: 70%;
+  max-width: 75%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -119,8 +119,8 @@
 .zone-meta-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  padding: 10px 14px;
+  align-items: center;
+  padding: 6px 14px;
   background: var(--bg-deep);
   border-bottom: 1px solid var(--border);
   font-size: 10px;
@@ -132,7 +132,7 @@
 .zone-meta-row .val {
   color: var(--amber-bright);
   font-family: 'Doto', 'VT323', monospace;
-  font-size: 22px;
+  font-size: 18px;
   letter-spacing: 0.05em;
   margin-left: 4px;
 }
@@ -157,15 +157,15 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 4px 6px;
-  padding: 6px 10px;
+  gap: 3px 4px;
+  padding: 4px 8px;
   background: var(--bg-deep);
   border-top: 1px solid var(--border);
   flex-shrink: 0;
 }
 .page-dot {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -177,14 +177,14 @@
 }
 .page-dot::before {
   content: '';
-  width: 6px; height: 6px;
+  width: 5px; height: 5px;
   border-radius: 50%;
   background: var(--amber-dim);
   transition: all 0.25s ease;
 }
 .page-dot.active::before {
   background: var(--zone-accent);
-  box-shadow: 0 0 8px var(--zone-accent-glow);
-  width: 18px;
+  box-shadow: 0 0 6px var(--zone-accent-glow);
+  width: 14px;
   border-radius: 3px;
 }

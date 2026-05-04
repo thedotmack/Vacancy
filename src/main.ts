@@ -35,7 +35,7 @@ window.__toggleMap = () => {
     const isCollapsed = container.classList.contains('collapsed');
     container.classList.toggle('collapsed', !isCollapsed);
     container.classList.toggle('expanded', isCollapsed);
-    toggle.textContent = isCollapsed ? '▲ HIDE MAP' : '▼ CITY MAP';
+    toggle.textContent = isCollapsed ? '▲ HIDE MAP' : '▼ CITY MAP · ALL VACANCIES';
     toggle.setAttribute('aria-expanded', String(isCollapsed));
   }
 };
