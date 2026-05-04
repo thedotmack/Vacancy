@@ -10,7 +10,10 @@ const listeners: Array<(r: Route) => void> = [];
 let currentRoute: Route = { kind: 'home' };
 
 export function parseHash(): Route {
-  const hash = window.location.hash.replace(/^#/, '');
+  const rawHash = window.location.hash.replace(/^#/, '');
+  // Strip query string (e.g. `?f=studio,pet`) — filter-state owns that slot.
+  const queryStart = rawHash.indexOf('?');
+  const hash = queryStart >= 0 ? rawHash.slice(0, queryStart) : rawHash;
   if (!hash || hash === '/') return { kind: 'home' };
   const parts = hash.replace(/^\//, '').split('/').filter(Boolean);
   if (parts[0] === 'zone' && parts[1]) {

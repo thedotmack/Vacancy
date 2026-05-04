@@ -1,0 +1,99 @@
+/* ============================================================
+   APP BAR — fixed-top per-zone header (back, title, search, heart)
+   ============================================================ */
+
+.app-bar {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px 36px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 6px;
+  padding-top: calc(10px + var(--safe-top));
+  background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(0,0,0,0.85) 100%);
+  border-bottom: 1px solid var(--cyan-faint);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 4;
+}
+
+.app-bar .zone-title {
+  font-family: 'Doto', 'VT323', 'Space Mono', monospace;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.12em;
+  color: var(--cyan-bright);
+  text-align: center;
+  font-variation-settings: 'ROND' 1;
+  text-shadow:
+    0 0 4px var(--cyan-bright),
+    0 0 14px var(--cyan-glow),
+    0 0 22px var(--zone-tint-glow);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-bar-back,
+.app-bar-search,
+.app-bar-heart {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--cyan-faint);
+  border-radius: 50%;
+  color: var(--cyan-bright);
+  padding: 0;
+  min-height: auto;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, color 0.15s;
+}
+
+.app-bar-back svg,
+.app-bar-search svg,
+.app-bar-heart svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.app-bar-heart svg {
+  fill: none;
+}
+
+.app-bar-back:active,
+.app-bar-search:active,
+.app-bar-heart:active {
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow);
+  background: var(--cyan-soft);
+}
+
+.app-bar-heart.is-active {
+  border-color: var(--magenta);
+  color: var(--magenta-bright);
+  box-shadow: 0 0 12px var(--magenta-glow);
+}
+.app-bar-heart.is-active svg {
+  fill: var(--magenta);
+  stroke: var(--magenta-bright);
+}
+
+/* Subtitle directly below the app-bar */
+.zone-subtitle {
+  text-align: center;
+  font-size: 11px;
+  color: var(--white);
+  opacity: 0.65;
+  letter-spacing: 0.18em;
+  padding: 6px 18px 12px;
+  margin: 0;
+  flex-shrink: 0;
+}

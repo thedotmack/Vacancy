@@ -4,45 +4,31 @@ import './styles/board.css';
 import './styles/controls.css';
 import './styles/animations.css';
 import './styles/map.css';
+import './styles/app-bar.css';
+import './styles/building-card.css';
+import './styles/filter-pills.css';
+import './styles/zone-overview.css';
 
 import { loadPreferences } from './utils/preferences';
-import { loadOrSeedCache, forceRefresh } from './utils/cache';
-import { buildZonePages, setupZoneSwipe } from './components/zone-strip';
-import { render, toggleRow, cycleSort } from './components/board';
-import { renderCityMap } from './components/city-map';
+import { loadOrSeedCache } from './utils/cache';
+import { buildZonePages, setupZoneSwipe, render, setActiveZone } from './components/zone-strip';
 import { initState, getActiveZone } from './state';
 import { submitVote as apiSubmitVote, submitComment as apiSubmitComment, fetchBuildingFeedback } from './utils/feedback-api';
-import { initRouter, onRouteChange, getCurrentRoute } from './router';
+import { initRouter, onRouteChange, getCurrentRoute, parseHash } from './router';
+import { onFavoritesChanged } from './utils/favorites';
+import { onFiltersChanged } from './components/filter-state';
+import { mountBuildingDetail, unmountBuildingDetail } from './components/building-detail';
 
 declare global {
   interface Window {
-    __toggleRow: (gate: string) => void;
-    __cycleSort: () => void;
-    __forceRefresh: () => void;
-    __toggleMap: () => void;
     __submitVote: (gate: string, isAccurate: boolean) => void;
     __submitComment: (gate: string) => void;
     __toggleComments: (gate: string) => void;
   }
 }
 
-window.__toggleRow = toggleRow;
-window.__cycleSort = cycleSort;
-window.__forceRefresh = () => forceRefresh(render);
-window.__toggleMap = () => {
-  const container = document.getElementById('cityMapContainer');
-  const toggle = document.querySelector('#mapToggle button');
-  if (container && toggle) {
-    const isCollapsed = container.classList.contains('collapsed');
-    container.classList.toggle('collapsed', !isCollapsed);
-    container.classList.toggle('expanded', isCollapsed);
-    toggle.textContent = isCollapsed ? '▲ HIDE MAP' : '▼ CITY MAP · ALL VACANCIES';
-    toggle.setAttribute('aria-expanded', String(isCollapsed));
-  }
-};
-
 window.__submitVote = async (gate: string, isAccurate: boolean) => {
-  const section = document.querySelector(`.row[data-gate="${gate}"] .accuracy-section`);
+  const section = document.querySelector(`[data-gate="${gate}"] .accuracy-section`);
   if (!section) return;
 
   const btns = section.querySelectorAll('.accuracy-btn');
@@ -134,21 +120,31 @@ function escapeHtml(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function applyRoute(route: ReturnType<typeof parseHash>): void {
+  if (route.kind === 'building') {
+    mountBuildingDetail(route.gate);
+  } else {
+    unmountBuildingDetail();
+    if (route.kind === 'zone') {
+      setActiveZone(route.id, true);
+    }
+  }
+}
+
 function init(): void {
   const prefs = loadPreferences();
   initState(prefs);
   loadOrSeedCache();
 
   initRouter();
-  onRouteChange((route) => {
-    console.debug('[router]', route);
-  });
-  console.debug('[router]', getCurrentRoute());
 
-  // Build the 23 zone panels (DOM) before wiring up swipe & rendering boards.
+  // Build the 23 zone panels (DOM) before wiring up swipe & rendering cards.
   buildZonePages();
 
-  const activeZone = getActiveZone();
+  const initialRoute = getCurrentRoute();
+  // If the URL pointed to a specific zone on first load, prefer that;
+  // otherwise fall back to the saved active zone.
+  const activeZone = initialRoute.kind === 'zone' ? initialRoute.id : getActiveZone();
   document.body.dataset.zone = activeZone;
 
   document.querySelectorAll('.page-dot').forEach(dot => {
@@ -157,15 +153,23 @@ function init(): void {
   });
 
   render();
-  renderCityMap();
 
-  // Jump (no animation) to the saved active zone before wiring scroll detection,
+  // Jump (no animation) to the active zone before wiring scroll detection,
   // so the initial scroll position doesn't fire a spurious "active zone changed".
   const pages = document.getElementById('zonePages');
   const target = document.querySelector<HTMLElement>(`.zone-page[data-zone-id="${activeZone}"]`);
   if (pages && target) pages.scrollLeft = target.offsetLeft;
 
   setupZoneSwipe();
+
+  // Re-render cards whenever filters or favorites change.
+  onFiltersChanged(() => render());
+  onFavoritesChanged(() => render());
+
+  // Route handling: building routes mount the detail overlay (Phase 3),
+  // zone routes scroll to that zone, home is the zero state.
+  onRouteChange(applyRoute);
+  applyRoute(initialRoute);
 }
 
 document.addEventListener('DOMContentLoaded', init);
