@@ -9,7 +9,7 @@ import { formatMoveIn, formatChipDate } from '../utils/dates';
 import { formatPrice, lowestPrice } from '../utils/formatters';
 import { isFavorite, toggleFavorite, onFavoritesChanged } from '../utils/favorites';
 import { fetchAllVoteCounts } from '../utils/feedback-api';
-import { buildingPhotoUrl } from '../utils/photos';
+import { buildingPhotoPrimary, buildingPhotoFallback } from '../utils/photos';
 
 let unsubscribeFavorites: (() => void) | null = null;
 let toastTimer: number | null = null;
@@ -95,8 +95,10 @@ function renderDetail(b: Building): string {
   const tourTarget = b.tourUrl || b.sourceUrl;
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${b.lat},${b.lng}`;
   const phoneHref = `tel:${b.phone}`;
-  const photoSrc = buildingPhotoUrl(b, 1024, 520);
+  const photoPrimary = buildingPhotoPrimary(b);
+  const photoSecondary = buildingPhotoFallback(b, 1024, 520);
   const fallbackArt = buildingArtSVG(b, zoneTint, { variant: 'hero' });
+  const heroOnErr = "if(this.dataset.tier==='1'){this.dataset.tier='2';this.src=this.dataset.fallback2;}else{this.outerHTML=this.dataset.fallback;}";
 
   return `
     <section class="detail-overlay" role="dialog" aria-modal="true" aria-label="${escapeAttr(b.name)} details">
@@ -111,9 +113,11 @@ function renderDetail(b: Building): string {
 
       <figure class="detail-hero">
         <span class="hero-zone-badge">${escapeHtml(zoneTitle)}</span>
-        <img src="${escapeAttr(photoSrc)}" alt="${escapeAttr(b.name)} exterior" loading="eager" referrerpolicy="no-referrer"
-             onerror="this.outerHTML=this.dataset.fallback"
-             data-fallback="${escapeAttr(fallbackArt)}">
+        <img src="${escapeAttr(photoPrimary)}" alt="${escapeAttr(b.name)} exterior" loading="eager" referrerpolicy="no-referrer"
+             data-tier="1"
+             data-fallback2="${escapeAttr(photoSecondary)}"
+             data-fallback="${escapeAttr(fallbackArt)}"
+             onerror="${escapeAttr(heroOnErr)}">
         <span class="hero-leased-badge">${leasedPct}% leased</span>
       </figure>
 
