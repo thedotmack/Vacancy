@@ -23,8 +23,23 @@
     <h1>Vacancies</h1>
     <div class="counts" id="counts"></div>
   </header>
-  <nav class="filters" id="filters" aria-label="Filter buildings"></nav>
-  <main id="map" aria-label="Map of buildings"></main>
+  <nav class="filter-bar" id="filterBar" aria-label="Filter buildings"></nav>
+  <main class="map-wrap" aria-label="Map of buildings">
+    <div id="map"></div>
+    <button class="map-locate" id="locateMe" type="button" aria-label="Show my location">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"></circle>
+        <line x1="12" y1="2" x2="12" y2="5"></line>
+        <line x1="12" y1="19" x2="12" y2="22"></line>
+        <line x1="2" y1="12" x2="5" y2="12"></line>
+        <line x1="19" y1="12" x2="22" y2="12"></line>
+        <circle cx="12" cy="12" r="8" fill="none"></circle>
+      </svg>
+    </button>
+  </main>
+  <div class="resize-handle" id="resizeHandle" role="separator" aria-orientation="horizontal" aria-label="Resize map and list" tabindex="0">
+    <span class="resize-handle-grip" aria-hidden="true"></span>
+  </div>
   <section class="building-list" aria-label="Buildings">
     <div class="list-header">
       <h2>Buildings</h2>
