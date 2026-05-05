@@ -4,7 +4,7 @@ import { getMark, setMark, getAllMarks, onMarksChanged, type Mark } from '../uti
 import { ZONE_METADATA } from '../data/zones';
 import { buildingArtSVG } from './building-art';
 import { formatPrice, lowestPrice } from '../utils/formatters';
-import { buildingPhotoUrl } from '../utils/photos';
+import { buildingPhotoPrimary, buildingPhotoFallback } from '../utils/photos';
 
 declare const L: any;
 
@@ -219,9 +219,12 @@ function filteredBuildings(): Building[] {
 
 function renderPhoto(b: Building): string {
   const fallbackSvg = buildingArtSVG(b, zoneTint(b), { variant: 'card' });
-  const photoSrc = buildingPhotoUrl(b, 320, 240);
+  const primary = buildingPhotoPrimary(b);
+  const secondary = buildingPhotoFallback(b, 320, 240);
   const escapedName = escapeHtml(b.name);
-  return `<img src="${escapeHtml(photoSrc)}" alt="${escapedName}" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML=this.dataset.fallback" data-fallback="${escapeHtml(fallbackSvg)}">`;
+  // Two-tier onerror chain: primary -> secondary -> SVG art.
+  const onErr = "if(this.dataset.tier==='1'){this.dataset.tier='2';this.src=this.dataset.fallback2;}else{this.outerHTML=this.dataset.fallback;}";
+  return `<img src="${escapeHtml(primary)}" alt="${escapedName}" loading="lazy" referrerpolicy="no-referrer" data-tier="1" data-fallback2="${escapeHtml(secondary)}" data-fallback="${escapeHtml(fallbackSvg)}" onerror="${onErr}">`;
 }
 
 function bedsLine(b: Building): string {
